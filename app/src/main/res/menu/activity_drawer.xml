@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_contributions"
+            android:icon="@android:mipmap/sym_def_app_icon"
+            android:title="Financials" />
+        <item
+            android:id="@+id/nav_products"
+            android:icon="@android:mipmap/sym_def_app_icon"
+            android:title="Products" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@android:mipmap/sym_def_app_icon"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@android:mipmap/sym_def_app_icon"
+            android:title="About Us" />
+    </group>
+
+
+
+</menu>

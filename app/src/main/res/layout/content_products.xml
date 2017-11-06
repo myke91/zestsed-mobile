@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_products"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.zestsed.mobile.ui.ProductsActivity"
+    tools:showIn="@layout/app_bar_products">
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:padding="10dp"
+        android:paddingBottom="1dp"
+        android:text="ZestSed Products"
+        android:layout_alignParentTop="true"
+        android:textSize="30sp"
+        android:gravity="center_horizontal" />
+
+<GridView
+    android:id="@+id/product_grid"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchMode="spacingWidth"
+    android:verticalSpacing="25dp"
+    android:numColumns="auto_fit"
+    android:horizontalSpacing="15dp"
+    android:layout_below="@id/label"
+    android:gravity="center"
+    android:columnWidth="150dp">
+
+
+
+</GridView>
+</RelativeLayout>

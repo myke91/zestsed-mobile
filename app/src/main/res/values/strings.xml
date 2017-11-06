@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">ZestSed</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_forgot_password">Forgot Password?</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">Email or password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="sign_up_header">SIGN UP FOR AN ACCOUNT AND START INVESTING</string>
+    <string name="back"><![CDATA[<< Back]]></string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_signout">Sign Out</string>
+    <string name="preference_file">ZestSed</string>
+    <string name="title_activity_splash_screen">ZestSed</string>
+    <string name="splash_screen">ZestSed</string>
+
+    <string name="title_activity_contributions">Financials</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_products">Products</string>
+    <string name="title_activity_about_us">About Us</string>
+
+    <string name="about_us">
+        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
+        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+        Et harum quidem rerum facilis est et expedita distinctio.
+        \n\nNam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id
+        quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
+        \n\nTemporibus autem quibusdam et aut officiis debitis aut
+        rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+        Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat
+        www.zestsed.com
+    </string>
+</resources>
