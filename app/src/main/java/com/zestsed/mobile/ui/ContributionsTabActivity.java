@@ -1,5 +1,6 @@
 package com.zestsed.mobile.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -108,8 +109,8 @@ FirebaseAuth auth;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_signout) {
-            auth.signOut();
-            startActivity(new Intent(ContributionsTabActivity.this, LoginActivity.class));
+            getApplicationContext().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().clear().apply();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
 

@@ -6,8 +6,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
@@ -20,15 +20,22 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.zestsed.mobile.R;
+import com.zestsed.mobile.data.Constants;
+import com.zestsed.mobile.services.MyFirebaseInstanceIDService;
+import com.zestsed.mobile.services.MyFirebaseMessagingService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
@@ -46,24 +53,26 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    DatabaseReference dbReference;
-    FirebaseAuth auth;
+    private static final String TAG = "LOGIN_ACTIVITY";
+
+    String url = Constants.BACKEND_BASE_URL + "/mobile/login";
+    RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        dbReference = FirebaseDatabase.getInstance().getReference("clients");
-
-        auth = FirebaseAuth.getInstance();
+        mRequestQueue = Volley.newRequestQueue(this);
 
         if (getIntent().getExtras() != null) {
-            String value = getIntent().getExtras().getString("message");
-            Toast.makeText(getApplicationContext(), value, Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+            builder.setMessage("Your registration is saved succesfully and pending approval. \n You will receive a mail and notification after approval");
+            builder.setTitle(R.string.app_name);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
-        if (auth.getCurrentUser() != null) {
+        if (getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getBoolean("authentication", false)) {
             startActivity(new Intent(LoginActivity.this, ContributionsTabActivity.class));
             finish();
         }
@@ -81,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     SharedPreferences.Editor editor = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit();
                     editor.putString("email", mEmailView.getText().toString());
-                    editor.commit();
+                    editor.apply();
                     attemptLogin();
                     return true;
                 }
@@ -97,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit();
                 editor.putString("email", mEmailView.getText().toString());
-                editor.commit();
+                editor.apply();
                 attemptLogin();
             }
         });
@@ -151,21 +160,64 @@ public class LoginActivity extends AppCompatActivity {
             focusView.requestFocus();
         } else {
             showProgress(true);
-            auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            showProgress(false);
-                            if (!task.isSuccessful()) {
-                                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                                mPasswordView.requestFocus();
-                            } else {
-                                Intent intent = new Intent(LoginActivity.this, ContributionsTabActivity.class);
-                                startActivity(intent);
-                                finish();
-                            }
-                        }
-                    });
+
+            JSONObject json = new JSONObject();
+            try {
+                json.put("email", email);
+                json.put("password", password);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, json, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Intent intent = new Intent(LoginActivity.this, ContributionsTabActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    showProgress(false);
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage(volleyError.getMessage());
+                        builder.setTitle(R.string.app_name);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+
+                }
+            });
+            boolean isTokenRegistered = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getBoolean ("isTokenRegistered", false);
+
+            if(!isTokenRegistered) {
+                String token = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("token", "");
+                JSONObject tokenData = new JSONObject();
+                try {
+                    tokenData.put("token", token);
+                    tokenData.put("email",email);
+                } catch (JSONException e) {
+                    Log.d("ZestSed", e.getLocalizedMessage());
+                }
+
+                JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", tokenData, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG,"Device registration done");
+                        getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().putBoolean("isTokenRegistered", true).apply();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(TAG,"Device registration failed");
+                    }
+                });
+                deviceRegisterRequest.setTag(TAG);
+                mRequestQueue.add(deviceRegisterRequest);
+            }
+            mRequestQueue.add(jsonRequest);
         }
     }
 
@@ -175,6 +227,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         return password.length() > 4;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(TAG);
+        }
     }
 
     /**

@@ -33,9 +33,36 @@
                     android:layout_height="50dp"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:inputType="text"
-                    android:hint="Full Name"
+                    android:hint="First Name"
                     android:ems="10"
-                    android:id="@+id/fullname" />
+                    android:id="@+id/firstname" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:inputType="text"
+                    android:hint="Last Name"
+                    android:ems="10"
+                    android:id="@+id/lastname" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:inputType="text"
+                    android:hint="Other Names"
+                    android:ems="10"
+                    android:id="@+id/othernames" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -51,18 +78,6 @@
                     android:id="@+id/email" />
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:inputType="textPassword"
-                    android:hint="Password"
-                    android:ems="10"
-                    android:id="@+id/password" />
-            </android.support.design.widget.TextInputLayout>
 
             <Spinner
                 android:id="@+id/gender_spinner"
@@ -121,6 +136,45 @@
                     android:hint="Next Of Kin Phone Number"
                     android:ems="10"
                     android:id="@+id/nextOfKinPhoneNumber" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:hint="Residential Address"
+                    android:ems="10"
+                    android:id="@+id/residentialAddress" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:hint="Occupation"
+                    android:ems="10"
+                    android:id="@+id/occupation" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:hint="Purpose Of Investing"
+                    android:ems="10"
+                    android:id="@+id/purposeOfInvesting" />
             </android.support.design.widget.TextInputLayout>
 
             <Button

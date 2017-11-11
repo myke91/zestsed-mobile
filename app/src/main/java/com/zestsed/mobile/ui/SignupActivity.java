@@ -1,19 +1,31 @@
 package com.zestsed.mobile.ui;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,85 +36,111 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.data.Client;
+import com.zestsed.mobile.data.Constants;
 import com.zestsed.mobile.utils.CONSTANTS;
 
-import java.util.HashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class SignupActivity extends AppCompatActivity {
-    DatabaseReference dbReference;
-    TextInputEditText fullname;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+
+public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private static final String TAG = "SIGNUP_ACTIVITY";
+
+    TextInputEditText firstname;
+    TextInputEditText lastname;
+    TextInputEditText othernames;
     TextInputEditText email;
-    TextInputEditText password;
     Spinner genderSpinner;
     TextInputEditText phoneNumber;
     TextInputEditText dateOfBirth;
     TextInputEditText nextOfKin;
     TextInputEditText nextOfKinPhoneNumber;
-    FirebaseAuth auth;
+    TextInputEditText occupation;
+    TextInputEditText residentialAddress;
+    TextInputEditText purposeOfInvesting;
+
+    RequestQueue mRequestQueue;
+    String url = Constants.BACKEND_BASE_URL + "/mobile/register";
+    SharedPreferences pref;
+    private SimpleDateFormat dateFormatter;
+    private DatePickerDialog datePickerDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        //set database reference
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        dbReference = db.getReference("clients");
-
-        //set up firebase auth
-        auth = FirebaseAuth.getInstance();
-
-        //add value listener
-        dbReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-                Log.d(CONSTANTS.TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(CONSTANTS.TAG, "Failed to read value.", error.toException());
-            }
-        });
+        pref = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
+        mRequestQueue = Volley.newRequestQueue(this);
 
         //get widget references
-        fullname = (TextInputEditText) findViewById(R.id.fullname);
+        firstname = (TextInputEditText) findViewById(R.id.firstname);
+        lastname = (TextInputEditText) findViewById(R.id.lastname);
+        othernames = (TextInputEditText) findViewById(R.id.othernames);
         email = (TextInputEditText) findViewById(R.id.email);
-        password = (TextInputEditText) findViewById(R.id.password);
         genderSpinner = (Spinner) findViewById(R.id.gender_spinner);
         phoneNumber = (TextInputEditText) findViewById(R.id.phonenumber);
         dateOfBirth = (TextInputEditText) findViewById(R.id.dateOfBirth);
         nextOfKin = (TextInputEditText) findViewById(R.id.nextOfKin);
         nextOfKinPhoneNumber = (TextInputEditText) findViewById(R.id.nextOfKinPhoneNumber);
+        occupation = (TextInputEditText) findViewById(R.id.occupation);
+        residentialAddress = (TextInputEditText) findViewById(R.id.residentialAddress);
+        purposeOfInvesting = (TextInputEditText) findViewById(R.id.purposeOfInvesting);
 
-        final CharSequence[] GENDER_OPTIONS = {"-- GENDER --", "Male", "Female"};
+        final CharSequence[] GENDER_OPTIONS = {"----", "Male", "Female"};
         ArrayAdapter<CharSequence> genderAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, GENDER_OPTIONS);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(genderAdapter);
 
+        setDateTimeField();
     }
 
     static Client existingClient;
 
+
+    private void setDateTimeField() {
+        dateOfBirth.setOnClickListener(this);
+        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        dateOfBirth.setInputType(InputType.TYPE_NULL);
+        dateOfBirth.setFocusable(false);
+        dateOfBirth.setClickable(true);
+        dateOfBirth.requestFocus();
+
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                dateOfBirth.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+    }
+
     public void registerClientAction(View view) {
         System.out.println(email.getText().toString());
         boolean error = false;
-        if (TextUtils.isEmpty(fullname.getText().toString())) {
-            fullname.setError("Enter Full Name");
+        if (TextUtils.isEmpty(firstname.getText().toString())) {
+            firstname.setError("Enter First Name");
             error = true;
         }
+        if (TextUtils.isEmpty(lastname.getText().toString())) {
+            lastname.setError("Enter Last Name");
+            error = true;
+        }
+
         if (TextUtils.isEmpty(email.getText().toString())) {
             email.setError("Enter Email");
-            error = true;
-        }
-        if (TextUtils.isEmpty(password.getText().toString())) {
-            password.setError("Enter Password");
             error = true;
         }
 
@@ -123,98 +161,128 @@ public class SignupActivity extends AppCompatActivity {
             nextOfKinPhoneNumber.setError("Enter Next Of Kin Phone Number");
             error = true;
         }
+        if (TextUtils.isEmpty(occupation.getText().toString())) {
+            occupation.setError("Enter Occupation");
+            error = true;
+        }
+        if (TextUtils.isEmpty(residentialAddress.getText().toString())) {
+            residentialAddress.setError("Enter Residential Address");
+            error = true;
+        }
+        if (TextUtils.isEmpty(purposeOfInvesting.getText().toString())) {
+            purposeOfInvesting.setError("Enter Purpose of Investing");
+            error = true;
+        }
 
         if (error) {
             return;
         }
 
-        Query query = dbReference.orderByChild("email").equalTo(email.getText().toString());
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Client> result = (HashMap<String, Client>) dataSnapshot.getValue();
-                if (result != null) {
-                    existingClient = result.get(0);
-                    System.out.println("existing client... " + existingClient);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         if (existingClient != null) {
             email.setError("E-Mail is already taken");
             return;
         }
 
 
-        RegisterAsyncTask task = new RegisterAsyncTask();
-        task.execute();
+        registerClient();
     }
 
     private String registerClient() {
-        String name = fullname.getText().toString();
+        final ProgressDialog progressDialog = ProgressDialog.show(SignupActivity.this, "", "Registering Client...");
+        progressDialog.show();
+        String fname = firstname.getText().toString();
+        String lname = lastname.getText().toString();
+        String oname = othernames.getText().toString();
         String mail = email.getText().toString();
-        String pass = password.getText().toString();
         String gender = genderSpinner.getSelectedItem().toString();
         String phone = phoneNumber.getText().toString();
         String date = dateOfBirth.getText().toString();
         String kin = nextOfKin.getText().toString();
         String kinPhone = nextOfKinPhoneNumber.getText().toString();
-
-        auth.createUserWithEmailAndPassword(mail, pass)
-                .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
-
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
-                                    Toast.LENGTH_SHORT).show();
-                            System.out.println("Task not Successful!");
-                        } else {
-                            startActivity(new Intent(SignupActivity.this, ContributionsTabActivity.class));
-                            finish();
-                        }
-                    }
-                });
+        String occu = occupation.getText().toString();
+        String rAddress = residentialAddress.getText().toString();
+        String purpose = purposeOfInvesting.getText().toString();
 
 
-        Client client = new Client(name, mail, gender, phone, date, kin, kinPhone);
-        String key = dbReference.push().getKey();
-        dbReference.child(key).setValue(client);
-        return key;
+        Client client = Client.load(fname, lname, oname, mail, gender, phone, date, kin, kinPhone, occu, rAddress, purpose);
+        JsonObjectRequest clientRegisterRequest = new JsonObjectRequest(Request.Method.POST, url, client, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                progressDialog.dismiss();
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString("message", "Registration Successful. Proceed to Login!");
+                intent.putExtras(mBundle);
+                startActivity(intent);
+                finish();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
+                if (error instanceof com.android.volley.ServerError) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                    builder.setMessage("SERVER ERROR");
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                } else {
+                    VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                    builder.setMessage(volleyError.getMessage());
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+            }
+        });
+
+        boolean isTokenRegistered = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getBoolean ("isTokenRegistered", false);
+        if(!isTokenRegistered) {
+            JSONObject json = new JSONObject();
+            String token = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("token", "");
+            try {
+                json.put("token", token);
+                json.put("email",mail);
+            } catch (JSONException e) {
+                Log.d("ZestSed", e.getLocalizedMessage());
+            }
+
+            JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().putBoolean("isTokenRegistered", true).apply();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+            deviceRegisterRequest.setTag(TAG);
+            mRequestQueue.add(deviceRegisterRequest);
+        }
+        clientRegisterRequest.setTag(TAG);
+        mRequestQueue.add(clientRegisterRequest);
+        return "";
     }
 
-    private class RegisterAsyncTask extends AsyncTask<String, String, String> {
-        ProgressDialog progressDialog;
 
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(SignupActivity.this, "", "Registering Client...");
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mRequestQueue != null) {
+            mRequestQueue.cancelAll(TAG);
         }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return registerClient();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            progressDialog.dismiss();
-            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-            Bundle mBundle = new Bundle();
-            mBundle.putString("message", "Registration Successful. Proceed to Login!");
-            intent.putExtras(mBundle);
-            startActivity(intent);
-            finish();
-        }
-
     }
 
-
+    @Override
+    public void onClick(View view) {
+        if (view == dateOfBirth) {
+            datePickerDialog.show();
+        }
+    }
 }

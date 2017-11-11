@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/fragment_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:gravity="center_horizontal"
             android:padding="10dp"
             android:paddingBottom="1dp"
             android:text="Contributions"
-            android:textSize="20sp"
-            android:gravity="center_horizontal"
-            android:id="@+id/fragment_label" />
+            android:textSize="20sp"/>
 
-        <ListView
-            android:id="@+id/contributionList"
-            android:layout_marginTop="5dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content">
+
+            <ListView
+                android:id="@+id/contributionList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_contribution"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="20dp"
+                android:src="@android:drawable/ic_input_add"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"/>
+
+
+        </RelativeLayout>
+
     </LinearLayout>
 </LinearLayout>

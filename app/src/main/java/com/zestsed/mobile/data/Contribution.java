@@ -1,13 +1,35 @@
 package com.zestsed.mobile.data;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.util.Map;
+
 /**
  * Created by mdugah on 3/14/2017.
  */
 
-public class Contribution {
+public class Contribution extends JSONObject {
     Client client;
     String date;
     Double amount;
+
+    public Contribution(Map copyFrom) {
+        super(copyFrom);
+    }
+
+    public Contribution(JSONTokener readFrom) throws JSONException {
+        super(readFrom);
+    }
+
+    public Contribution(String json) throws JSONException {
+        super(json);
+    }
+
+    public Contribution(JSONObject copyFrom, String[] names) throws JSONException {
+        super(copyFrom, names);
+    }
 
     public Contribution() {
     }
@@ -21,6 +43,16 @@ public class Contribution {
         this.client = client;
         this.date = date;
         this.amount = amount;
+    }
+
+    public static Contribution load(){
+        String json = "";
+        try {
+            return new Contribution(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public Client getClient() {
