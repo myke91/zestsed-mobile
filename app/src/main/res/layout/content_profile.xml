@@ -24,7 +24,7 @@
 
 
                 <EditText
-                    android:id="@+id/fullname"
+                    android:id="@+id/firstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -52,7 +52,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/occupation"
+                    android:id="@+id/lastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -81,7 +81,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/residential_address"
+                    android:id="@+id/otherNames"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -108,7 +108,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/hometown"
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -138,7 +138,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/high_school"
+                    android:id="@+id/gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -166,7 +166,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/college"
+                    android:id="@+id/phonenumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -186,6 +186,169 @@
                     android:src="@android:drawable/ic_menu_edit"
                     android:tag="college" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/dateOfBirth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/nextOfKin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/nextOfKinTelephone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/residentialAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/occupation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/purposeOfInvesting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="#fff"
+                    android:elevation="4dp"
+                    android:enabled="false"
+                    android:padding="15dp"
+                    android:text="College" />
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:elevation="4dp"
+                    android:onClick="enableInput"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:tag="college" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout

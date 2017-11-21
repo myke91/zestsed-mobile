@@ -7,7 +7,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,19 +16,23 @@ import java.util.Map;
 
 public class Client extends JSONObject {
 
-
-    String firstname;
-    String lastname;
-    String othernames;
+    int registrationId;
+    String firstName;
+    String lastName;
+    String otherNames;
     String email;
     String gender;
     String phoneNumber;
     String dateOfBirth;
     String nextOfKin;
-    String nextOfKinPhoneNumber;
+    String nextOfKinTelephone;
     String occupation;
     String residentialAddress;
     String purposeOfInvesting;
+    int isApproved;
+    String dateOfApproval;
+    String created_at;
+    String updated_at;
 
     public Client() {
     }
@@ -50,22 +53,22 @@ public class Client extends JSONObject {
         super(copyFrom, names);
     }
 
-    public Client(String firstname, String email) {
-        this.firstname = firstname;
+    public Client(String firstName, String email) {
+        this.firstName = firstName;
         this.email = email;
     }
 
-    public Client(String firstname, String lastname, String othernames, String email, String gender, String phoneNumber, String dateOfBirth,
-                  String nextOfKin, String nextOfKinPhoneNumber, String occupation, String residentialAddress, String purposeOfInvesting) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.othernames = othernames;
+    public Client(String firstName, String lastName, String otherNames, String email, String gender, String phoneNumber, String dateOfBirth,
+                  String nextOfKin, String nextOfKinTelephone, String occupation, String residentialAddress, String purposeOfInvesting) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.otherNames = otherNames;
         this.email = email;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.nextOfKin = nextOfKin;
-        this.nextOfKinPhoneNumber = nextOfKinPhoneNumber;
+        this.nextOfKinTelephone = nextOfKinTelephone;
         this.occupation = occupation;
         this.residentialAddress = residentialAddress;
         this.purposeOfInvesting = purposeOfInvesting;
@@ -99,6 +102,21 @@ public class Client extends JSONObject {
 
     }
 
+    public int getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(int registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getFullName(){
+        if(otherNames != null){
+            return firstName+" "+otherNames+" "+lastName;
+        }
+        return firstName+" "+lastName;
+    }
+
     public String getOccupation() {
         return occupation;
     }
@@ -124,28 +142,28 @@ public class Client extends JSONObject {
         this.email = email;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getOthernames() {
-        return othernames;
+    public String getOtherNames() {
+        return otherNames;
     }
 
-    public void setOthernames(String othernames) {
-        this.othernames = othernames;
+    public void setOtherNames(String otherNames) {
+        this.otherNames = otherNames;
     }
 
     public String getGender() {
@@ -188,11 +206,43 @@ public class Client extends JSONObject {
         this.nextOfKin = nextOfKin;
     }
 
-    public String getNextOfKinPhoneNumber() {
-        return nextOfKinPhoneNumber;
+    public String getNextOfKinTelephone() {
+        return nextOfKinTelephone;
     }
 
-    public void setNextOfKinPhoneNumber(String nextOfKinPhoneNumber) {
-        this.nextOfKinPhoneNumber = nextOfKinPhoneNumber;
+    public void setNextOfKinTelephone(String nextOfKinTelephone) {
+        this.nextOfKinTelephone = nextOfKinTelephone;
+    }
+
+    public int getIsApproved() {
+        return isApproved;
+    }
+
+    public void setIsApproved(int isApproved) {
+        this.isApproved = isApproved;
+    }
+
+    public String getDateOfApproval() {
+        return dateOfApproval;
+    }
+
+    public void setDateOfApproval(String dateOfApproval) {
+        this.dateOfApproval = dateOfApproval;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }

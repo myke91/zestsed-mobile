@@ -11,7 +11,10 @@ import android.widget.TextView;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.data.Contribution;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by mdugah on 1/18/2017.
@@ -35,10 +38,19 @@ public class ContributionListAdapter extends ArrayAdapter<Contribution> {
         TextView amount = (TextView) rowView.findViewById(R.id.firstLine);
         TextView date = (TextView) rowView.findViewById(R.id.secondLine);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        amount.setText(values.get(position).getAmount()+"");
-        date.setText(values.get(position).getDate()+"");
+        amount.setText("Contributed GHC" + values.get(position).getContributionAmount() + " via " + values.get(position).getModeOfPayment());
+        date.setText("on " + dateFormat(values.get(position).getDateOfContribution()));
         imageView.setImageResource(R.mipmap.blue);
 
         return rowView;
+    }
+
+    private String dateFormat(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy",Locale.getDefault());
+        try {
+            return sdf.format(Date.valueOf(date));
+        } catch (Exception ex) {
+            return date;
+        }
     }
 }

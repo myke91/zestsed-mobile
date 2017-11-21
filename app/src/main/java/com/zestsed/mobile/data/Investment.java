@@ -11,6 +11,8 @@ public class Investment {
     List<String> contributionKeys;
     Double totalAmount;
     Double rate;
+    String created_at;
+    String updated_at;
 
     public Investment() {
     }

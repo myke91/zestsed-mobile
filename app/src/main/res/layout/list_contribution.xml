@@ -10,7 +10,8 @@
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="6dp"
+        android:visibility="gone"
+        android:layout_marginEnd="6dp"
         android:src="@mipmap/blue" />
 
     <TextView
@@ -18,11 +19,11 @@
         android:layout_width="fill_parent"
         android:layout_height="26dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/icon"
         android:ellipsize="marquee"
+        android:textStyle="italic"
         android:singleLine="true"
-        android:text="OPD Number"
         android:textSize="12sp" />
 
     <TextView
@@ -30,12 +31,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/secondLine"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toEndOf="@id/icon"
         android:gravity="center_vertical"
-        android:text="Patient Full Name"
         android:textSize="16sp" />
 
 </RelativeLayout>

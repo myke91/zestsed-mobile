@@ -80,9 +80,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         mVisible = true;
         mContentView = findViewById(R.id.fullscreen_content);
-        TextView invTip = (TextView) findViewById(R.id.investment_tip);
-        invTip.setText("Great Investors Don’t Diversify");
-
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +110,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        delayedHide(200);
     }
 
     private void toggle() {

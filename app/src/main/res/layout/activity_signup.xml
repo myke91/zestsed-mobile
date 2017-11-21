@@ -35,7 +35,7 @@
                     android:inputType="text"
                     android:hint="First Name"
                     android:ems="10"
-                    android:id="@+id/firstname" />
+                    android:id="@+id/firstName" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -48,7 +48,7 @@
                     android:inputType="text"
                     android:hint="Last Name"
                     android:ems="10"
-                    android:id="@+id/lastname" />
+                    android:id="@+id/lastName" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -62,7 +62,7 @@
                     android:inputType="text"
                     android:hint="Other Names"
                     android:ems="10"
-                    android:id="@+id/othernames" />
+                    android:id="@+id/otherNames" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -135,7 +135,7 @@
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:hint="Next Of Kin Phone Number"
                     android:ems="10"
-                    android:id="@+id/nextOfKinPhoneNumber" />
+                    android:id="@+id/nextOfKinTelephone" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout

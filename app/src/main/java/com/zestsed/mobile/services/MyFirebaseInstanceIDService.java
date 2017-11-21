@@ -44,7 +44,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     }
 
     private void sendRegistrationToServer(String token) {
-        getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().putString("token", token).apply();
         String email = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("email", "");
         if (!email.isEmpty()) {
             RequestQueue mRequestQueue = Volley.newRequestQueue(this);

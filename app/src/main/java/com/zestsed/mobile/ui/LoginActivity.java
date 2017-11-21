@@ -3,7 +3,11 @@ package com.zestsed.mobile.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.TextInputEditText;
@@ -12,14 +16,21 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,16 +42,22 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.data.Constants;
+import com.zestsed.mobile.data.Contribution;
 import com.zestsed.mobile.services.MyFirebaseInstanceIDService;
 import com.zestsed.mobile.services.MyFirebaseMessagingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.regex.Matcher;
+
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends Activity {
 
 
     /**
@@ -57,16 +74,17 @@ public class LoginActivity extends AppCompatActivity {
 
     String url = Constants.BACKEND_BASE_URL + "/mobile/login";
     RequestQueue mRequestQueue;
+    SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mRequestQueue = Volley.newRequestQueue(this);
-
+        pref = getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
         if (getIntent().getExtras() != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-            builder.setMessage("Your registration is saved succesfully and pending approval. \n You will receive a mail and notification after approval");
+            builder.setMessage("Your registration is saved successfully and pending approval. \n You will receive a mail and notification after approval");
             builder.setTitle(R.string.app_name);
             AlertDialog dialog = builder.create();
             dialog.show();
@@ -88,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     Log.d("ZestSed", "email put into shared preferences is " + mEmailView.getText().toString());
 
-                    SharedPreferences.Editor editor = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = pref.edit();
                     editor.putString("email", mEmailView.getText().toString());
                     editor.apply();
                     attemptLogin();
@@ -104,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d("ZestSed", "email put into shared preferences is " + mEmailView.getText().toString());
 
-                SharedPreferences.Editor editor = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = pref.edit();
                 editor.putString("email", mEmailView.getText().toString());
                 editor.apply();
                 attemptLogin();
@@ -140,11 +158,6 @@ public class LoginActivity extends AppCompatActivity {
         boolean cancel = false;
         View focusView = null;
 
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
 
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -171,9 +184,22 @@ public class LoginActivity extends AppCompatActivity {
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Intent intent = new Intent(LoginActivity.this, ContributionsTabActivity.class);
-                    startActivity(intent);
-                    finish();
+                    String message = "";
+
+                    try {
+                        message = response.getString("success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    boolean firstTimeLogin = message.equalsIgnoreCase("FIRST TIME LOGIN");
+                    if (firstTimeLogin) {
+                        showSetPasswordDialog();
+                    } else {
+                        pref.edit().putString("email", email).apply();
+                        Intent intent = new Intent(LoginActivity.this, ContributionsTabActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -186,47 +212,89 @@ public class LoginActivity extends AppCompatActivity {
                         builder.setTitle(R.string.app_name);
                         AlertDialog dialog = builder.create();
                         dialog.show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                        builder.setMessage("SERVER ERROR");
+                        builder.setTitle(R.string.app_name);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
                     }
 
                 }
             });
-            boolean isTokenRegistered = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getBoolean ("isTokenRegistered", false);
-
-            if(!isTokenRegistered) {
-                String token = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("token", "");
-                JSONObject tokenData = new JSONObject();
-                try {
-                    tokenData.put("token", token);
-                    tokenData.put("email",email);
-                } catch (JSONException e) {
-                    Log.d("ZestSed", e.getLocalizedMessage());
-                }
-
-                JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", tokenData, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.i(TAG,"Device registration done");
-                        getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().putBoolean("isTokenRegistered", true).apply();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(TAG,"Device registration failed");
-                    }
-                });
-                deviceRegisterRequest.setTag(TAG);
-                mRequestQueue.add(deviceRegisterRequest);
-            }
             mRequestQueue.add(jsonRequest);
         }
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@");
+        Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email);
+        return matcher.find();
     }
 
-    private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+    public void showSetPasswordDialog() {
+        showProgress(false);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog_set_password, (ViewGroup) findViewById(R.id.activity_dialog_parent));
+        final TextInputEditText txtPassword = (TextInputEditText) layout.findViewById(R.id.password_1);
+        final TextInputEditText txtPassword2 = (TextInputEditText) layout.findViewById(R.id.password_2);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(layout);
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (!txtPassword.getText().toString().equals(txtPassword2.getText().toString())) {
+                    Toast.makeText(getApplicationContext(), "Password and Repeat Password not equal", Toast.LENGTH_LONG).show();
+                }
+                dialog.dismiss();
+
+                final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "", "Processing request...");
+                progressDialog.show();
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("password", txtPassword.getText().toString());
+                    data.put("email", mEmailView.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/setPassword", data, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Request successful. \n Proceed to login with new password", Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                            Toast.makeText(getApplicationContext(), volleyError.getMessage(), Toast.LENGTH_LONG).show();
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "SERVER ERROR", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+                });
+                jsonRequest.setTag(TAG);
+                mRequestQueue.add(jsonRequest);
+
+            }
+
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog dialogSetPassword = builder.create();
+        dialogSetPassword.show();
     }
 
     @Override

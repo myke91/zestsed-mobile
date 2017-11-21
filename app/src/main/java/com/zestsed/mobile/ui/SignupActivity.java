@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -49,6 +50,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -82,15 +85,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         mRequestQueue = Volley.newRequestQueue(this);
 
         //get widget references
-        firstname = (TextInputEditText) findViewById(R.id.firstname);
-        lastname = (TextInputEditText) findViewById(R.id.lastname);
-        othernames = (TextInputEditText) findViewById(R.id.othernames);
+        firstname = (TextInputEditText) findViewById(R.id.firstName);
+        lastname = (TextInputEditText) findViewById(R.id.lastName);
+        othernames = (TextInputEditText) findViewById(R.id.otherNames);
         email = (TextInputEditText) findViewById(R.id.email);
         genderSpinner = (Spinner) findViewById(R.id.gender_spinner);
         phoneNumber = (TextInputEditText) findViewById(R.id.phonenumber);
         dateOfBirth = (TextInputEditText) findViewById(R.id.dateOfBirth);
         nextOfKin = (TextInputEditText) findViewById(R.id.nextOfKin);
-        nextOfKinPhoneNumber = (TextInputEditText) findViewById(R.id.nextOfKinPhoneNumber);
+        nextOfKinPhoneNumber = (TextInputEditText) findViewById(R.id.nextOfKinTelephone);
         occupation = (TextInputEditText) findViewById(R.id.occupation);
         residentialAddress = (TextInputEditText) findViewById(R.id.residentialAddress);
         purposeOfInvesting = (TextInputEditText) findViewById(R.id.purposeOfInvesting);
@@ -103,12 +106,9 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         setDateTimeField();
     }
 
-    static Client existingClient;
-
-
     private void setDateTimeField() {
         dateOfBirth.setOnClickListener(this);
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         dateOfBirth.setInputType(InputType.TYPE_NULL);
         dateOfBirth.setFocusable(false);
         dateOfBirth.setClickable(true);
@@ -127,8 +127,12 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    public boolean isEmail(String str) {
+        Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(str);
+        return matcher.find();
+    }
+
     public void registerClientAction(View view) {
-        System.out.println(email.getText().toString());
         boolean error = false;
         if (TextUtils.isEmpty(firstname.getText().toString())) {
             firstname.setError("Enter First Name");
@@ -139,13 +143,19 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             error = true;
         }
 
-        if (TextUtils.isEmpty(email.getText().toString())) {
-            email.setError("Enter Email");
+        if (!isEmail(email.getText().toString())) {
+            email.setError("Invalid Email");
             error = true;
         }
 
         if (TextUtils.isEmpty(phoneNumber.getText().toString())) {
             phoneNumber.setError("Enter Phone Number");
+            error = true;
+        }
+
+        if (genderSpinner.getSelectedItem().toString().equalsIgnoreCase("-")) {
+            TextView v = (TextView) genderSpinner.getSelectedView();
+            v.setError("Select a gender");
             error = true;
         }
         if (TextUtils.isEmpty(dateOfBirth.getText().toString())) {
@@ -178,17 +188,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-
-        if (existingClient != null) {
-            email.setError("E-Mail is already taken");
-            return;
-        }
-
-
         registerClient();
     }
 
-    private String registerClient() {
+    private void registerClient() {
         final ProgressDialog progressDialog = ProgressDialog.show(SignupActivity.this, "", "Registering Client...");
         progressDialog.show();
         String fname = firstname.getText().toString();
@@ -221,53 +224,59 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressDialog.dismiss();
-                if (error instanceof com.android.volley.ServerError) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
-                    builder.setMessage("SERVER ERROR");
-                    builder.setTitle(R.string.app_name);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                } else {
+                if (error.networkResponse != null && error.networkResponse.data != null) {
                     VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
                     AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
                     builder.setMessage(volleyError.getMessage());
                     builder.setTitle(R.string.app_name);
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                    builder.setMessage("SERVER ERROR");
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
-
             }
+
         });
 
-        boolean isTokenRegistered = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getBoolean ("isTokenRegistered", false);
-        if(!isTokenRegistered) {
-            JSONObject json = new JSONObject();
-            String token = getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("token", "");
-            try {
-                json.put("token", token);
-                json.put("email",mail);
-            } catch (JSONException e) {
-                Log.d("ZestSed", e.getLocalizedMessage());
-            }
 
-            JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    getApplication().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).edit().putBoolean("isTokenRegistered", true).apply();
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-            deviceRegisterRequest.setTag(TAG);
-            mRequestQueue.add(deviceRegisterRequest);
+        JSONObject json = new JSONObject();
+        String token = FirebaseInstanceId.getInstance().getToken();
+        if (token == null) {
+            progressDialog.dismiss();
+            AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+            builder.setMessage("Kindly check your connection to the internet!");
+            builder.setTitle("REGISTRATION FAILED");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return;
         }
+        try {
+            json.put("token", token);
+            json.put("email", mail);
+        } catch (JSONException e) {
+            Log.d("ZestSed", e.getLocalizedMessage());
+        }
+
+        JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error occured while registrating device");
+            }
+        });
+        deviceRegisterRequest.setTag(TAG);
+        mRequestQueue.add(deviceRegisterRequest);
+
         clientRegisterRequest.setTag(TAG);
         mRequestQueue.add(clientRegisterRequest);
-        return "";
     }
 
 

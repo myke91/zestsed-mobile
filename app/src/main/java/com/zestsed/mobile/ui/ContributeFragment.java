@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +24,17 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,12 +42,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.ControllableTask;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.adapter.ContributionListAdapter;
 import com.zestsed.mobile.data.Client;
 import com.zestsed.mobile.data.Constants;
 import com.zestsed.mobile.data.Contribution;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,17 +65,19 @@ import static com.zestsed.mobile.R.id.dateOfBirth;
 public class ContributeFragment extends Fragment implements View.OnClickListener {
 
     RequestQueue mRequestQueue;
-    String url = Constants.BACKEND_BASE_URL + "/contributions";
+
     SharedPreferences pref;
     private static final String TAG = "CONTRIBUTION_FRAGMENT";
     private FloatingActionButton add;
-
+    ProgressDialog progressDialog;
+    ListView lv;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         pref = getActivity().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE);
         mRequestQueue = Volley.newRequestQueue(getActivity());
+
     }
 
     @Override
@@ -80,12 +89,11 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.fragment_contribute, container, false);
-
+        progressDialog = ProgressDialog.show(getActivity(), "", "Loading data...");
         add = (FloatingActionButton) layout.findViewById(R.id.add_contribution);
-        ListView lv = (ListView) layout.findViewById(R.id.contributionList);
-        ContributionListAdapter adapter = new ContributionListAdapter(getActivity(), getContributions());
-        lv.setAdapter(adapter);
+        lv = (ListView) layout.findViewById(R.id.contributionList);
 
+        getContributions();
         add.setOnClickListener(this);
 
 
@@ -94,26 +102,45 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
 
 
     private List<Contribution> getContributions() {
+        progressDialog.show();
         final List<Contribution> list = new ArrayList<>();
-        JSONObject json = new JSONObject();
-        try {
-            json.put("email", pref.getString("email", ""));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, json, new Response.Listener<JSONObject>() {
+        final ObjectMapper mapper = new ObjectMapper();
+        String email = pref.getString("email", "");
+
+        JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, Constants.BACKEND_BASE_URL + "/mobile/getContributions?email=" + email, null, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
+                progressDialog.hide();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject json = response.getJSONObject(i);
+                        Contribution contribution = mapper.readValue(json.toString(), Contribution.class);
+                        list.add(contribution);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                ContributionListAdapter adapter = new ContributionListAdapter(getActivity(), list);
+                lv.setAdapter(adapter);
 
             }
         }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                progressDialog.hide();
                 if (error.networkResponse != null && error.networkResponse.data != null) {
                     VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage(volleyError.getMessage());
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(error.getMessage());
                     builder.setTitle(R.string.app_name);
                     AlertDialog dialog = builder.create();
                     dialog.show();
@@ -122,20 +149,28 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
             }
         });
         jsonRequest.setTag(TAG);
-//        mRequestQueue.add(jsonRequest);
+        mRequestQueue.add(jsonRequest);
         return list;
 
+    }
+
+    @Override
+    public void onDestroy() {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        super.onDestroy();
     }
 
     public void showAddContributionDialog() {
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_add_contribution, (ViewGroup) getActivity().findViewById(R.id.activity_contribute));
 
-        Spinner spnModeOfPayment = (Spinner) layout.findViewById(R.id.mode_of_payment);
-        TextInputEditText txtSourceOfPayment = (TextInputEditText) layout.findViewById(R.id.source_of_payment);
-        TextInputEditText txtVendorName = (TextInputEditText) layout.findViewById(R.id.vendor_name);
+        final Spinner spnModeOfPayment = (Spinner) layout.findViewById(R.id.mode_of_payment);
+        final TextInputEditText txtSourceOfPayment = (TextInputEditText) layout.findViewById(R.id.source_of_payment);
+        final TextInputEditText txtVendorName = (TextInputEditText) layout.findViewById(R.id.vendor_name);
         final TextInputEditText txtDateOfContribution = (TextInputEditText) layout.findViewById(R.id.date_of_contribution);
-        TextInputEditText txtContributionAmount = (TextInputEditText) layout.findViewById(R.id.contribution_amount);
+        final TextInputEditText txtContributionAmount = (TextInputEditText) layout.findViewById(R.id.contribution_amount);
 
         final CharSequence[] MODE_PAYMENT_OPTION = {"- MODE OF PAYMENT -", "Mobile Money", "Bank Transfer", "Cash", "Cheque", "Bank Draft"};
         ArrayAdapter<CharSequence> genderAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, MODE_PAYMENT_OPTION);
@@ -145,7 +180,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
         final SimpleDateFormat dateFormatter;
 
         txtDateOfContribution.setOnClickListener(this);
-        dateFormatter = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         txtDateOfContribution.setInputType(InputType.TYPE_NULL);
         txtDateOfContribution.setFocusable(false);
         txtDateOfContribution.setClickable(true);
@@ -175,47 +210,91 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                boolean error = false;
 
-                final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Saving contribution...");
-                progressDialog.show();
+                if (spnModeOfPayment.getSelectedItem().toString().equalsIgnoreCase("- MODE OF PAYMENT -")) {
+                    TextView v = (TextView) spnModeOfPayment.getSelectedView();
+                    v.setError("Select a gender");
+                    error = true;
+                }
+                if (TextUtils.isEmpty(txtSourceOfPayment.getText().toString())) {
+                    txtSourceOfPayment.setError("Enter Date Of Birth");
+                    error = true;
+                }
 
-                Contribution contribution = Contribution.load();
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, contribution, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        progressDialog.dismiss();
+                if (TextUtils.isEmpty(txtVendorName.getText().toString())) {
+                    txtVendorName.setError("Enter Next Of Kin Name");
+                    error = true;
+                }
+                if (TextUtils.isEmpty(txtDateOfContribution.getText().toString())) {
+                    txtDateOfContribution.setError("Enter Next Of Kin Phone Number");
+                    error = true;
+                }
+                if (TextUtils.isEmpty(txtContributionAmount.getText().toString())) {
+                    txtContributionAmount.setError("Enter Occupation");
+                    error = true;
+                }
+
+
+                if (error) {
+                    Toast.makeText(getActivity(), "Invalid form entries", Toast.LENGTH_LONG).show();
+                } else {
+                    dialog.dismiss();
+
+                    final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Saving contribution...");
+                    progressDialog.show();
+                    String modeOfPayment = spnModeOfPayment.getSelectedItem().toString();
+                    String sourceOfPayment = txtSourceOfPayment.getText().toString();
+                    String vendorName = txtVendorName.getText().toString();
+                    String dateOfContribution = txtDateOfContribution.getText().toString();
+                    String contributionAmount = txtContributionAmount.getText().toString();
+                    String email = pref.getString("email", "");
+
+                    if (email.equals("")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage("DATA SAVED SUCCESSFUL AND PENDING APPROVAL");
+                        builder.setMessage("Cannot Save Contribution. \n Possible Invalid Session. \nRe login and try again ");
                         builder.setTitle(R.string.app_name);
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        AlertDialog errorDialog = builder.create();
+                        errorDialog.show();
+                        return;
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        if (error instanceof com.android.volley.ServerError) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage("SERVER ERROR");
-                            builder.setTitle(R.string.app_name);
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
+                    Contribution contribution = Contribution.load(modeOfPayment, sourceOfPayment, vendorName, dateOfContribution, contributionAmount, email);
 
-                        } else {
-                            VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/addContribution", contribution, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            progressDialog.dismiss();
                             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage(volleyError.getMessage());
+                            builder.setMessage("DATA SAVED SUCCESSFUL AND PENDING APPROVAL");
                             builder.setTitle(R.string.app_name);
                             AlertDialog dialog = builder.create();
                             dialog.show();
                         }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.dismiss();
+                            if (error instanceof com.android.volley.ServerError) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage("SERVER ERROR");
+                                builder.setTitle(R.string.app_name);
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
 
-                    }
-                });
-                jsonRequest.setTag(TAG);
-                mRequestQueue.add(jsonRequest);
+                            } else {
+                                VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setMessage(volleyError.getMessage());
+                                builder.setTitle(R.string.app_name);
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }
 
+                        }
+                    });
+                    jsonRequest.setTag(TAG);
+                    mRequestQueue.add(jsonRequest);
+                }
             }
 
         });

@@ -20,7 +20,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_signout">Sign Out</string>
-    <string name="preference_file">ZestSed</string>
+    <string name="preference_file">com.zestsed.mobile</string>
     <string name="title_activity_splash_screen">ZestSed</string>
     <string name="splash_screen">ZestSed</string>
 
