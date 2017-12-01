@@ -24,32 +24,22 @@ public class Contribution extends JSONObject {
     String userEmail;
     int userId;
     int isApproved;
+    int isInvested;
     String dateOfApproval;
     String created_at;
     String updated_at;
 
 
-    public Contribution(Map copyFrom) {
-        super(copyFrom);
+    public Contribution() {
     }
 
-    public Contribution(JSONTokener readFrom) throws JSONException {
-        super(readFrom);
-    }
 
     public Contribution(String json) throws JSONException {
         super(json);
     }
 
-    public Contribution(JSONObject copyFrom, String[] names) throws JSONException {
-        super(copyFrom, names);
-    }
 
-    public Contribution() {
-    }
-
-
-    public static Contribution load(String modeOfPayment, String sourceOfPayment, String vendorName, String dateOfContribution, String contributionAmount,String userEmail) {
+    public static Contribution load(String modeOfPayment, String sourceOfPayment, String vendorName, String dateOfContribution, String contributionAmount, String userEmail) {
         Map map = new LinkedHashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
@@ -147,6 +137,14 @@ public class Contribution extends JSONObject {
 
     public void setDateOfApproval(String dateOfApproval) {
         this.dateOfApproval = dateOfApproval;
+    }
+
+    public int getIsInvested() {
+        return isInvested;
+    }
+
+    public void setIsInvested(int isInvested) {
+        this.isInvested = isInvested;
     }
 
     public String getCreated_at() {

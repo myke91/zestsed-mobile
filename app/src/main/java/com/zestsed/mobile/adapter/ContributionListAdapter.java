@@ -38,7 +38,7 @@ public class ContributionListAdapter extends ArrayAdapter<Contribution> {
         TextView amount = (TextView) rowView.findViewById(R.id.firstLine);
         TextView date = (TextView) rowView.findViewById(R.id.secondLine);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        amount.setText("Contributed GHC" + values.get(position).getContributionAmount() + " via " + values.get(position).getModeOfPayment());
+        amount.setText("GH₵ " + values.get(position).getContributionAmount() + " Quota via " + values.get(position).getModeOfPayment());
         date.setText("on " + dateFormat(values.get(position).getDateOfContribution()));
         imageView.setImageResource(R.mipmap.blue);
 
@@ -46,7 +46,7 @@ public class ContributionListAdapter extends ArrayAdapter<Contribution> {
     }
 
     private String dateFormat(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy",Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("EEEEEE dd-MMM-yyyy",Locale.getDefault());
         try {
             return sdf.format(Date.valueOf(date));
         } catch (Exception ex) {

@@ -209,10 +209,46 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
 
         Client client = Client.load(fname, lname, oname, mail, gender, phone, date, kin, kinPhone, occu, rAddress, purpose);
+
+
+        JSONObject json = new JSONObject();
+        String token = FirebaseInstanceId.getInstance().getToken();
+        if (token == null) {
+            progressDialog.dismiss();
+            AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+            builder.setMessage("Kindly check your connection to the internet!");
+            builder.setTitle("REGISTRATION FAILED");
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            return;
+        }
+        try {
+            json.put("token", token);
+            json.put("email", mail);
+        } catch (JSONException e) {
+            Log.d("ZestSed", e.getLocalizedMessage());
+        }
+
+
+        final JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error occured while registrating device");
+            }
+        });
+        deviceRegisterRequest.setTag(TAG);
+
+
         JsonObjectRequest clientRegisterRequest = new JsonObjectRequest(Request.Method.POST, url, client, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 progressDialog.dismiss();
+                mRequestQueue.add(deviceRegisterRequest);
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putString("message", "Registration Successful. Proceed to Login!");
@@ -241,40 +277,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             }
 
         });
-
-
-        JSONObject json = new JSONObject();
-        String token = FirebaseInstanceId.getInstance().getToken();
-        if (token == null) {
-            progressDialog.dismiss();
-            AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
-            builder.setMessage("Kindly check your connection to the internet!");
-            builder.setTitle("REGISTRATION FAILED");
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return;
-        }
-        try {
-            json.put("token", token);
-            json.put("email", mail);
-        } catch (JSONException e) {
-            Log.d("ZestSed", e.getLocalizedMessage());
-        }
-
-        JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Error occured while registrating device");
-            }
-        });
-        deviceRegisterRequest.setTag(TAG);
-        mRequestQueue.add(deviceRegisterRequest);
-
         clientRegisterRequest.setTag(TAG);
         mRequestQueue.add(clientRegisterRequest);
     }

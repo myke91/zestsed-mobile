@@ -114,7 +114,6 @@ public class ProfileActivity extends AppCompatActivity
                     ((TextView) findViewById(R.id.user_profile_name)).setText(client.getFullName());
                     ((TextView) findViewById(R.id.user_profile_email)).setText(client.getEmail());
 
-
                     firstname.setText(client.getFirstName());
                     lastname.setText(client.getLastName());
                     othernames.setText(client.getOtherNames());

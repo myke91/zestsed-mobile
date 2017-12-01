@@ -3,7 +3,7 @@
               android:id="@+id/activity_login"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#FFF"
+              android:background="@mipmap/background"
               android:gravity="center"
               android:orientation="vertical"
               android:paddingBottom="@dimen/activity_vertical_margin"
@@ -34,13 +34,6 @@
             android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:contentDescription="logo text"
-                android:layout_gravity="center"
-                android:src="@mipmap/logo_text"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -51,6 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
+                    android:textColor="@android:color/white"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"/>
@@ -66,6 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
+                    android:textColor="@android:color/white"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
@@ -84,26 +79,34 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold"/>
 
-            <Button
-                android:id="@+id/forgot_password_button"
-                style="?android:textAppearanceSmall"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:text="@string/action_forgot_password"
-                android:textColor="@color/red"
-                android:textStyle="bold"/>
+                android:layout_weight="2"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/register_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:onClick="register"
-                android:text="@string/action_register"
-                android:textColor="@color/pink"
-                android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/forgot_password_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_forgot_password"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"/>
+
+                <Button
+                    android:id="@+id/register_button"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="register"
+                    android:text="@string/action_register"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>

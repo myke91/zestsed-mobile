@@ -1,68 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <TextView
+            android:id="@+id/fragment_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:gravity="center_horizontal"
             android:padding="10dp"
             android:paddingBottom="1dp"
             android:text="Investments Made"
-            android:textSize="20sp"
-            android:gravity="center_horizontal"
-            android:id="@+id/fragment_label" />
+            android:textSize="20sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="3"
-            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:orientation="horizontal">
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
             <TextView
+                android:id="@+id/txtOpeningBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:layout_margin="4dp"
-                android:textAlignment="center"
                 android:padding="10dp"
-                android:text="Opening Balance \n GHC n/a"/>
+                android:text="Opening Balance \n GH₵ n/a"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"/>
+
             <TextView
+                android:id="@+id/txtTotalContributions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:layout_margin="4dp"
-                android:textAlignment="center"
                 android:padding="10dp"
-                android:text="Total Contributions \n GHC n/a"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/colorPrimary"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:layout_margin="4dp"
+                android:text="Total Contributions \n GH₵ n/a"
                 android:textAlignment="center"
-                android:padding="10dp"
-                android:text="Closing Balance \n GHC n/a"/>
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <ListView
             android:id="@+id/investmentsList"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 </LinearLayout>
