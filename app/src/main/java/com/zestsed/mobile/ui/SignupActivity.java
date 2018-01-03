@@ -41,7 +41,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.data.Client;
 import com.zestsed.mobile.data.Constants;
-import com.zestsed.mobile.utils.CONSTANTS;
 
 import org.json.JSONException;
 import org.json.JSONObject;

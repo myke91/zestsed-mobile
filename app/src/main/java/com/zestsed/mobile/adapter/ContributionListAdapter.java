@@ -40,7 +40,6 @@ public class ContributionListAdapter extends ArrayAdapter<Contribution> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         amount.setText("GH₵ " + values.get(position).getContributionAmount() + " Quota via " + values.get(position).getModeOfPayment());
         date.setText("on " + dateFormat(values.get(position).getDateOfContribution()));
-        imageView.setImageResource(R.mipmap.blue);
 
         return rowView;
     }

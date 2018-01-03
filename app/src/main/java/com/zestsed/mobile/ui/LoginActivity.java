@@ -71,6 +71,7 @@ public class LoginActivity extends Activity {
     private View mProgressView;
     private View mLoginFormView;
     private static final String TAG = "LOGIN_ACTIVITY";
+    private static int LOGIN_ACTION = 543;
 
     String url = Constants.BACKEND_BASE_URL + "/mobile/login";
     RequestQueue mRequestQueue;
@@ -103,7 +104,7 @@ public class LoginActivity extends Activity {
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == LOGIN_ACTION || id == EditorInfo.IME_NULL) {
                     Log.d("ZestSed", "email put into shared preferences is " + mEmailView.getText().toString());
 
                     SharedPreferences.Editor editor = pref.edit();

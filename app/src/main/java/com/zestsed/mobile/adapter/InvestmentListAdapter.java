@@ -41,7 +41,6 @@ public class InvestmentListAdapter extends ArrayAdapter<InvestmentDetails> {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         amount.setText("Contribution of GH₵ " + values.get(position).getAmount() + " was invested on " + dateFormat(values.get(position).getDateOfInvestment()));
         date.setText("at an interest rate of " + values.get(position).getRate() + "% per annum");
-        imageView.setImageResource(R.mipmap.blue);
 
         return rowView;
     }

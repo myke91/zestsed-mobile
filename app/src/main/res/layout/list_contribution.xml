@@ -11,8 +11,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:visibility="gone"
-        android:layout_marginEnd="6dp"
-        android:src="@mipmap/blue" />
+        android:layout_marginEnd="6dp" />
 
     <TextView
         android:id="@+id/secondLine"

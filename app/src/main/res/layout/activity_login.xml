@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
                     android:textColor="@android:color/white"
-                    android:imeActionId="@+id/login"
+                    android:imeActionId="543"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
