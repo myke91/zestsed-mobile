@@ -28,6 +28,7 @@ public class Client extends JSONObject {
     String nextOfKin;
     String nextOfKinTelephone;
     String occupation;
+    String image;
     String residentialAddress;
     String purposeOfInvesting;
     int isApproved;
@@ -213,6 +214,14 @@ public class Client extends JSONObject {
 
     public void setNextOfKinTelephone(String nextOfKinTelephone) {
         this.nextOfKinTelephone = nextOfKinTelephone;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public int getIsApproved() {

@@ -1,12 +1,21 @@
 package com.zestsed.mobile.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +23,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.system.ErrnoException;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +32,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +50,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity
     EditText lastname;
     EditText othernames;
     EditText email;
-    Spinner genderSpinner;
+    EditText genderSpinner;
     EditText phoneNumber;
     EditText dateOfBirth;
     EditText nextOfKin;
@@ -60,10 +75,12 @@ public class ProfileActivity extends AppCompatActivity
     EditText occupation;
     EditText residentialAddress;
     EditText purposeOfInvesting;
-    private ImageView image;
+    private ImageView coverImage;
     private ImageButton profilePic;
     private String userEmail;
     ProgressDialog progressDialog;
+    private Uri mCropImageUri;
+    Intent cropImageIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity
         userEmail = getApplicationContext().getSharedPreferences(getString(R.string.preference_file), Context.MODE_PRIVATE).getString("email", "");
         mRequestQueue = Volley.newRequestQueue(this);
 
-        image = (ImageView) findViewById(R.id.header_cover_image);
+        coverImage = (ImageView) findViewById(R.id.header_cover_image);
         profilePic = (ImageButton) findViewById(R.id.user_profile_photo);
 
 
@@ -84,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity
         lastname = (EditText) findViewById(R.id.lastName);
         othernames = (EditText) findViewById(R.id.otherNames);
         email = (EditText) findViewById(R.id.email);
-        genderSpinner = (Spinner) findViewById(R.id.gender_spinner);
+        genderSpinner = (EditText) findViewById(R.id.gender);
         phoneNumber = (EditText) findViewById(R.id.phonenumber);
         dateOfBirth = (EditText) findViewById(R.id.dateOfBirth);
         nextOfKin = (EditText) findViewById(R.id.nextOfKin);
@@ -118,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity
                     lastname.setText(client.getLastName());
                     othernames.setText(client.getOtherNames());
                     email.setText(client.getEmail());
-                    genderSpinner.setSelection(1);
+                    genderSpinner.setText(client.getGender());
                     phoneNumber.setText(client.getPhoneNumber());
                     dateOfBirth.setText(client.getDateOfBirth());
                     nextOfKin.setText(client.getNextOfKin());
@@ -126,6 +143,11 @@ public class ProfileActivity extends AppCompatActivity
                     occupation.setText(client.getOccupation());
                     residentialAddress.setText(client.getResidentialAddress());
                     purposeOfInvesting.setText(client.getPurposeOfInvesting());
+
+                    byte[] decodedString = Base64.decode(client.getImage(), Base64.DEFAULT);
+                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    coverImage.setImageBitmap(decodedByte);
+                    profilePic.setImageBitmap(decodedByte);
                 } catch (Exception ex) {
                     Log.d(TAG, "Error occurred while retrieving properties from json object " + ex.getLocalizedMessage());
                 }
@@ -165,11 +187,11 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     public void updateProfilePicture(View view) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Choose Profile Picture"), CHOOSE_PICTURE);
-
+//        Intent intent = new Intent();
+//        intent.setType("coverImage/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent, "Choose Profile Picture"), CHOOSE_PICTURE);
+        startActivityForResult(getPickImageChooserIntent(), CHOOSE_PICTURE);
     }
 
     @Override
@@ -177,63 +199,80 @@ public class ProfileActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == CHOOSE_PICTURE) {
-                System.out.println("picture data from choose picture " + data);
+                Uri imageUri = getPickImageResultUri(data);
 
-                try {
-                    Intent cropIntent = new Intent("com.android.camera.action.CROP");
-                    // indicate image type and Uri
-                    cropIntent.setDataAndType(data.getData(), "image/*");
-                    // set crop properties here
-                    cropIntent.putExtra("crop", true);
-                    // indicate aspect of desired crop
-                    cropIntent.putExtra("aspectX", 1);
-                    cropIntent.putExtra("aspectY", 1);
-                    // indicate output X and Y
-                    cropIntent.putExtra("outputX", 256);
-                    cropIntent.putExtra("outputY", 256);
-                    // retrieve data on return
-                    cropIntent.putExtra("return-data", true);
-                    // start the activity - we handle returning in onActivityResult
-                    startActivityForResult(cropIntent, CROP_PICTURE);
-                } catch (ActivityNotFoundException anfe) {
-                    String errorMessage = "Your device doesn't support the crop action!";
-                    Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-                    toast.show();
+                // For API >= 23 we need to check specifically that we have permissions to read external storage,
+                // but we don't know if we need to for the URI so the simplest is to try open the stream and see if we get error.
+                boolean requirePermissions = false;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                        checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                        isUriRequiresPermissions(imageUri)) {
+
+                    mCropImageUri = imageUri;
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
                 }
-            }
-            if (requestCode == CROP_PICTURE) {
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("image", data.getData());
-                    json.put("email", userEmail);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/update/image", json, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
 
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                });
-                ImageView imageView = (ImageView) findViewById(R.id.header_cover_image);
-                ImageButton profilePic = (ImageButton) findViewById(R.id.user_profile_photo);
-
-                Bundle extras = data.getExtras();
-                Bitmap selectedBitmap = extras.getParcelable("data");
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                selectedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-
-                imageView.setImageBitmap(selectedBitmap);
-                profilePic.setImageBitmap(selectedBitmap);
+                cropImageIntent = new Intent(this, CropImageActivity.class);
+                cropImageIntent.putExtra("image", imageUri); //Optional parameters{
+                startActivityForResult(cropImageIntent, CROP_PICTURE);
             }
         }
+        if (requestCode == CROP_PICTURE) {
+            JSONObject json = new JSONObject();
+             Bitmap bm = null;
+            if (data.getData() != null) {
+                try {
+                    bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                json.put("image", encodeImage(bm));
+                json.put("email", userEmail);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            progressDialog.setMessage("Updating coverImage...");
+            progressDialog.show();
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/update/coverImage", json, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    progressDialog.dismiss();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    progressDialog.dismiss();
+                }
+            });
+            mRequestQueue.add(request);
+
+            if (bm != null) {
+                ImageView imageView = (ImageView) findViewById(R.id.header_cover_image);
+                ImageButton profilePic = (ImageButton) findViewById(R.id.user_profile_photo);
+                imageView.setImageBitmap(bm);
+                profilePic.setImageBitmap(bm);
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (mCropImageUri != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            Toast.makeText(this, "Required permissions are not granted", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String encodeImage(Bitmap bm)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        byte[] b = baos.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     public void enableInput(EditText input) {
@@ -246,17 +285,17 @@ public class ProfileActivity extends AppCompatActivity
         JSONObject json = new JSONObject();
 
         try {
-            json.put("fullname", firstname.getText().toString());
-            json.put("occupation", lastname.getText().toString());
-            json.put("residentialAddress", othernames.getText().toString());
-            json.put("hometown", genderSpinner.getSelectedItem().toString());
-            json.put("highSchool", phoneNumber.getText().toString());
-            json.put("college", dateOfBirth.getText().toString());
-            json.put("college", nextOfKin.getText().toString());
-            json.put("college", nextOfKinPhoneNumber.getText().toString());
-            json.put("college", occupation.getText().toString());
-            json.put("college", residentialAddress.getText().toString());
-            json.put("college", purposeOfInvesting.getText().toString());
+            json.put("firstName", firstname.getText().toString());
+            json.put("lastName", lastname.getText().toString());
+            json.put("otherNames", othernames.getText().toString());
+            json.put("genter", genderSpinner.getText().toString());
+            json.put("phoneNumber", phoneNumber.getText().toString());
+            json.put("dateOfBirth", dateOfBirth.getText().toString());
+            json.put("nextOfKin", nextOfKin.getText().toString());
+            json.put("nextOfKinPhoneNumber", nextOfKinPhoneNumber.getText().toString());
+            json.put("occupation", occupation.getText().toString());
+            json.put("residentialAddress", residentialAddress.getText().toString());
+            json.put("purposeOfInvesting", purposeOfInvesting.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -301,6 +340,108 @@ public class ProfileActivity extends AppCompatActivity
         occupation.setEnabled(false);
         residentialAddress.setEnabled(false);
         purposeOfInvesting.setEnabled(false);
+    }
+
+
+    /**
+     * Create a chooser intent to select the  source to get coverImage from.<br/>
+     * The source can be camera's  (ACTION_IMAGE_CAPTURE) or gallery's (ACTION_GET_CONTENT).<br/>
+     * All possible sources are added to the  intent chooser.
+     */
+    public Intent getPickImageChooserIntent() {
+
+// Determine Uri of camera coverImage to  save.
+        Uri outputFileUri = getCaptureImageOutputUri();
+
+        List<Intent> allIntents = new ArrayList<>();
+        PackageManager packageManager = getPackageManager();
+
+// collect all camera intents
+        Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
+        for (ResolveInfo res : listCam) {
+            Intent intent = new Intent(captureIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            if (outputFileUri != null) {
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            }
+            allIntents.add(intent);
+        }
+
+// collect all gallery intents
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("coverImage/*");
+        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
+        for (ResolveInfo res : listGallery) {
+            Intent intent = new Intent(galleryIntent);
+            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            intent.setPackage(res.activityInfo.packageName);
+            allIntents.add(intent);
+        }
+
+// the main intent is the last in the  list (fucking android) so pickup the useless one
+        Intent mainIntent = allIntents.get(allIntents.size() - 1);
+        for (Intent intent : allIntents) {
+            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
+                mainIntent = intent;
+                break;
+            }
+        }
+        allIntents.remove(mainIntent);
+
+// Create a chooser from the main  intent
+        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
+
+// Add all other intents
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
+
+        return chooserIntent;
+    }
+
+    /**
+     * Get URI to coverImage received from capture  by camera.
+     */
+    private Uri getCaptureImageOutputUri() {
+        Uri outputFileUri = null;
+        File getImage = getExternalCacheDir();
+        if (getImage != null) {
+            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
+        }
+        return outputFileUri;
+    }
+
+    /**
+     * Get the URI of the selected coverImage from  {@link #getPickImageChooserIntent()}.<br/>
+     * Will return the correct URI for camera  and gallery coverImage.
+     *
+     * @param data the returned data of the  activity result
+     */
+    public Uri getPickImageResultUri(Intent data) {
+        boolean isCamera = true;
+        if (data != null && data.getData() != null) {
+            String action = data.getAction();
+            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+        }
+        return isCamera ? getCaptureImageOutputUri() : data.getData();
+    }
+
+    /**
+     * Test if we can open the given Android URI to test if permission required error is thrown.<br>
+     */
+    public boolean isUriRequiresPermissions(Uri uri) {
+        try {
+            ContentResolver resolver = getContentResolver();
+            InputStream stream = resolver.openInputStream(uri);
+            stream.close();
+            return false;
+        } catch (FileNotFoundException e) {
+            if (e.getCause() instanceof ErrnoException) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     @Override

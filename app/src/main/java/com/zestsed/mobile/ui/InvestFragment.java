@@ -188,6 +188,7 @@ public class InvestFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        progressDialog.dismiss();
         if (mRequestQueue != null) {
             mRequestQueue.cancelAll(TAG);
         }
