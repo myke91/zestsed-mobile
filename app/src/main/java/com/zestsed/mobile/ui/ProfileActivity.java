@@ -171,7 +171,6 @@ public class ProfileActivity extends AppCompatActivity
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
-
             }
         });
         jsonRequest.setTag(TAG);
@@ -187,10 +186,6 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     public void updateProfilePicture(View view) {
-//        Intent intent = new Intent();
-//        intent.setType("coverImage/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//        startActivityForResult(Intent.createChooser(intent, "Choose Profile Picture"), CHOOSE_PICTURE);
         startActivityForResult(getPickImageChooserIntent(), CHOOSE_PICTURE);
     }
 
@@ -213,37 +208,54 @@ public class ProfileActivity extends AppCompatActivity
                 }
 
                 cropImageIntent = new Intent(this, CropImageActivity.class);
-                cropImageIntent.putExtra("image", imageUri); //Optional parameters{
+                cropImageIntent.putExtra("image", imageUri);
                 startActivityForResult(cropImageIntent, CROP_PICTURE);
             }
         }
         if (requestCode == CROP_PICTURE) {
             JSONObject json = new JSONObject();
-             Bitmap bm = null;
+            Bitmap bm = null;
+            final boolean imageSuccess = false;
             if (data.getData() != null) {
                 try {
                     bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
-                } catch (FileNotFoundException e) {
+                    json.put("image", encodeImage(bm));
+                    json.put("email", userEmail);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            try {
-                json.put("image", encodeImage(bm));
-                json.put("email", userEmail);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            progressDialog.setMessage("Updating coverImage...");
+
+            progressDialog.setMessage("Updating profile image...");
             progressDialog.show();
             JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/update/coverImage", json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     progressDialog.dismiss();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setMessage("Image updated successfully.");
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     progressDialog.dismiss();
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                        builder.setMessage(volleyError.getMessage());
+                        builder.setTitle(R.string.app_name);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                        builder.setMessage(error.getMessage());
+                        builder.setTitle(R.string.app_name);
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
                 }
             });
             mRequestQueue.add(request);
@@ -267,10 +279,9 @@ public class ProfileActivity extends AppCompatActivity
         }
     }
 
-    private String encodeImage(Bitmap bm)
-    {
+    private String encodeImage(Bitmap bm) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG,100,baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
