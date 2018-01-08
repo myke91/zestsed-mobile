@@ -228,7 +228,7 @@ public class ProfileActivity extends AppCompatActivity
 
             progressDialog.setMessage("Updating profile image...");
             progressDialog.show();
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/update/coverImage", json, new Response.Listener<JSONObject>() {
+            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/update/image", json, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     progressDialog.dismiss();
@@ -292,14 +292,16 @@ public class ProfileActivity extends AppCompatActivity
     }
 
     public void updateProfileInfo(View view) {
-
+        progressDialog.setMessage("Updating user profile information");
         JSONObject json = new JSONObject();
 
         try {
+            json.put("previousEmail", userEmail);
             json.put("firstName", firstname.getText().toString());
             json.put("lastName", lastname.getText().toString());
             json.put("otherNames", othernames.getText().toString());
-            json.put("genter", genderSpinner.getText().toString());
+            json.put("gender", genderSpinner.getText().toString());
+            json.put("email", email.getText().toString());
             json.put("phoneNumber", phoneNumber.getText().toString());
             json.put("dateOfBirth", dateOfBirth.getText().toString());
             json.put("nextOfKin", nextOfKin.getText().toString());
@@ -327,14 +329,35 @@ public class ProfileActivity extends AppCompatActivity
                 occupation.setEnabled(false);
                 residentialAddress.setEnabled(false);
                 purposeOfInvesting.setEnabled(false);
+
+                progressDialog.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                builder.setMessage("Profile updated successfully.");
+                builder.setTitle(R.string.app_name);
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                progressDialog.dismiss();
+                if (error.networkResponse != null && error.networkResponse.data != null) {
+                    VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setMessage(volleyError.getMessage());
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                    builder.setMessage(error.getMessage());
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
-
+        mRequestQueue.add(jsonRequest);
 
     }
 
