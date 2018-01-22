@@ -174,17 +174,30 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <EditText
+                <!--<EditText-->
+                    <!--android:id="@+id/gender"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="5dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="#fff"-->
+                    <!--android:clickable="true"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:enabled="false"-->
+                    <!--android:padding="15dp"/>-->
+
+                <Spinner
                     android:id="@+id/gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:elevation="4dp"
-                    android:enabled="false"
-                    android:padding="15dp"/>
+                    android:enabled="false"/>
 
                 <android.support.v7.widget.AppCompatImageButton
                     android:layout_width="50dp"

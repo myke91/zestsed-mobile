@@ -25,7 +25,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="3">
 
             <TextView
                 android:id="@+id/txtOpeningBalance"
@@ -35,7 +35,7 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:padding="10dp"
-                android:text="Opening Balance \n GH₵ n/a"
+                android:text="Opening Quota \n GH₵ n/a"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"/>
@@ -48,7 +48,20 @@
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:padding="10dp"
-                android:text="Total Contributions \n GH₵ n/a"
+                android:text="Total Quota \n GH₵ n/a"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtInterestAccrued"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:padding="10dp"
+                android:text="Interest Accrued \n GH₵ n/a"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"/>

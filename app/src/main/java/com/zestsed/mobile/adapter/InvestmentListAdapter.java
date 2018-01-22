@@ -38,9 +38,10 @@ public class InvestmentListAdapter extends ArrayAdapter<InvestmentDetails> {
         View rowView = inflater.inflate(R.layout.list_contribution, parent, false);
         TextView amount = (TextView) rowView.findViewById(R.id.firstLine);
         TextView date = (TextView) rowView.findViewById(R.id.secondLine);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
-        amount.setText("Contribution of GH₵ " + values.get(position).getAmount() + " was invested on " + dateFormat(values.get(position).getDateOfInvestment()));
-        date.setText("at an interest rate of " + values.get(position).getRate() + "% per annum");
+
+        amount.setText(values.get(position).getQuotaMonth() +" "+values.get(position).getQuotaYear() +" contribution of GH₵ "+ values.get(position).getQuotaAmount() +" currently at GH₵ "
+                + values.get(position).getQuotaRollover());
+        date.setText("yielded interest of GH₵ " + values.get(position).getQuotaWithInterest());
 
         return rowView;
     }

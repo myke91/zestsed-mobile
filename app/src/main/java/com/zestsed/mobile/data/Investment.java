@@ -17,6 +17,7 @@ import java.util.Map;
 public class Investment extends JSONObject {
     private Double openingBalance;
     private Double totalContributions;
+    private Double totalInterest;
 
     public Investment() {
     }
@@ -26,12 +27,13 @@ public class Investment extends JSONObject {
     }
 
 
-    public static Investment load(Double openingBalance, Double totalContributions) {
+    public static Investment load(Double openingBalance, Double totalContributions, Double totalInterest) {
         Map map = new LinkedHashMap<>();
         ObjectMapper mapper = new ObjectMapper();
 
         map.put("openingBalance", openingBalance);
         map.put("totalContributions", totalContributions);
+        map.put("totalInterest", totalInterest);
 
         try {
             String json = mapper.writeValueAsString(map);
@@ -56,6 +58,14 @@ public class Investment extends JSONObject {
 
     public void setTotalContributions(Double totalContributions) {
         this.totalContributions = totalContributions;
+    }
+
+    public Double getTotalInterest() {
+        return totalInterest;
+    }
+
+    public void setTotalInterest(Double totalInterest) {
+        this.totalInterest = totalInterest;
     }
 }
 

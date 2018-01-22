@@ -52,6 +52,7 @@ public class InvestFragment extends Fragment {
     ListView lv;
     TextView txtOpeningBalance;
     TextView txtTotalContributions;
+    TextView txtInterestAccrued;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class InvestFragment extends Fragment {
         lv = (ListView) layout.findViewById(R.id.investmentsList);
         txtOpeningBalance = (TextView) layout.findViewById(R.id.txtOpeningBalance);
         txtTotalContributions = (TextView) layout.findViewById(R.id.txtTotalContributions);
+        txtInterestAccrued = (TextView) layout.findViewById(R.id.txtInterestAccrued);
         getInvestments();
         getHeaderSummary();
         return layout;
@@ -84,11 +86,11 @@ public class InvestFragment extends Fragment {
                 try {
                     Double openingBalance = response.getDouble("openingBalance");
                     Double totalContributions = response.getDouble("totalContributions");
+                    Double totalInterest = response.getDouble("totalInterest");
 
-                    txtOpeningBalance.setText("Opening Balance \n GH₵ " + openingBalance);
-                    txtTotalContributions.setText("Total Contributions \n GH₵ " + totalContributions);
-
-
+                    txtOpeningBalance.setText("Opening Quota \n GH₵ " + openingBalance);
+                    txtTotalContributions.setText("Total Quota \n GH₵ " + totalContributions);
+                    txtInterestAccrued.setText("Total Interest Accrued \n GH₵ " + totalInterest);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -232,12 +232,33 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         final JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", json, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                progressDialog.dismiss();
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                Bundle mBundle = new Bundle();
+                mBundle.putString("message", "Registration Successful. Proceed to Login!");
+                intent.putExtras(mBundle);
+                startActivity(intent);
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Error occured while registrating device");
+                progressDialog.dismiss();
+                if (error.networkResponse != null && error.networkResponse.data != null) {
+                    VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                    builder.setMessage(volleyError.getMessage() +"\n Attempt Login to trigger device registration again.");
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SignupActivity.this);
+                    builder.setMessage("SERVER ERROR");
+                    builder.setTitle(R.string.app_name);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
         deviceRegisterRequest.setTag(TAG);
@@ -246,14 +267,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         JsonObjectRequest clientRegisterRequest = new JsonObjectRequest(Request.Method.POST, url, client, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                progressDialog.dismiss();
                 mRequestQueue.add(deviceRegisterRequest);
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                Bundle mBundle = new Bundle();
-                mBundle.putString("message", "Registration Successful. Proceed to Login!");
-                intent.putExtras(mBundle);
-                startActivity(intent);
-                finish();
             }
         }, new Response.ErrorListener() {
             @Override

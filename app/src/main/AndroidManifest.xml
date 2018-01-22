@@ -32,6 +32,7 @@
             android:name=".ui.LoginActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash_screen"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/FullscreenTheme"/>
         <activity
             android:name=".ui.ProfileActivity"
@@ -62,6 +63,8 @@
         </service>
 
         <activity android:name=".ui.CropImageActivity">
+        </activity>
+        <activity android:name=".ui.NotificationActivity">
         </activity>
     </application>
 

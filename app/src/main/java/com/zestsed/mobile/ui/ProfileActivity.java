@@ -2,6 +2,7 @@ package com.zestsed.mobile.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -24,14 +25,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.system.ErrnoException;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +58,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,7 +76,7 @@ public class ProfileActivity extends AppCompatActivity
     EditText lastname;
     EditText othernames;
     EditText email;
-    EditText genderSpinner;
+    Spinner genderSpinner;
     EditText phoneNumber;
     EditText dateOfBirth;
     EditText nextOfKin;
@@ -81,6 +90,8 @@ public class ProfileActivity extends AppCompatActivity
     ProgressDialog progressDialog;
     private Uri mCropImageUri;
     Intent cropImageIntent;
+    private SimpleDateFormat dateFormatter;
+    private DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +112,7 @@ public class ProfileActivity extends AppCompatActivity
         lastname = (EditText) findViewById(R.id.lastName);
         othernames = (EditText) findViewById(R.id.otherNames);
         email = (EditText) findViewById(R.id.email);
-        genderSpinner = (EditText) findViewById(R.id.gender);
+        genderSpinner = (Spinner) findViewById(R.id.gender);
         phoneNumber = (EditText) findViewById(R.id.phonenumber);
         dateOfBirth = (EditText) findViewById(R.id.dateOfBirth);
         nextOfKin = (EditText) findViewById(R.id.nextOfKin);
@@ -109,6 +120,18 @@ public class ProfileActivity extends AppCompatActivity
         occupation = (EditText) findViewById(R.id.occupation);
         residentialAddress = (EditText) findViewById(R.id.residentialAddress);
         purposeOfInvesting = (EditText) findViewById(R.id.purposeOfInvesting);
+
+        String[] genders = new String[]{"Male", "Female"};
+
+        final List<String> genderList = new ArrayList<>(Arrays.asList(genders));
+
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_dropdown_item, genderList);
+
+        genderSpinner.setEnabled(false);
+        genderSpinner.setClickable(false);
+        genderSpinner.setAdapter(spinnerArrayAdapter);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -135,7 +158,7 @@ public class ProfileActivity extends AppCompatActivity
                     lastname.setText(client.getLastName());
                     othernames.setText(client.getOtherNames());
                     email.setText(client.getEmail());
-                    genderSpinner.setText(client.getGender());
+                    genderSpinner.setSelection(client.getGender().equalsIgnoreCase("Male") ? 0 : 1);
                     phoneNumber.setText(client.getPhoneNumber());
                     dateOfBirth.setText(client.getDateOfBirth());
                     nextOfKin.setText(client.getNextOfKin());
@@ -164,7 +187,6 @@ public class ProfileActivity extends AppCompatActivity
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
-
                     AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
                     builder.setMessage(error.getMessage());
                     builder.setTitle(R.string.app_name);
@@ -175,18 +197,50 @@ public class ProfileActivity extends AppCompatActivity
         });
         jsonRequest.setTag(TAG);
         mRequestQueue.add(jsonRequest);
+        setDateTimeField();
     }
 
 
     public void enableInput(View view) {
         String viewTag = (String) view.getTag();
         int id = getResources().getIdentifier(viewTag, "id", getPackageName());
-        this.enableInput((EditText) findViewById(id));
-
+        try {
+            this.enableInput((EditText) findViewById(id));
+        } catch (Exception ex) {
+            this.enableInput((Spinner) findViewById(id));
+        }
     }
 
     public void updateProfilePicture(View view) {
         startActivityForResult(getPickImageChooserIntent(), CHOOSE_PICTURE);
+    }
+
+    View.OnClickListener datePickerClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            datePickerDialog.show();
+        }
+    };
+
+    private void setDateTimeField() {
+        dateOfBirth.setOnClickListener(datePickerClickListener);
+        dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        dateOfBirth.setInputType(InputType.TYPE_NULL);
+        dateOfBirth.setFocusable(false);
+        dateOfBirth.setClickable(true);
+        dateOfBirth.requestFocus();
+
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                dateOfBirth.setText(dateFormatter.format(newDate.getTime()));
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
     }
 
     @Override
@@ -291,8 +345,15 @@ public class ProfileActivity extends AppCompatActivity
         input.requestFocus();
     }
 
+    public void enableInput(Spinner input) {
+        input.setClickable(true);
+        input.setEnabled(true);
+        input.requestFocus();
+    }
+
     public void updateProfileInfo(View view) {
         progressDialog.setMessage("Updating user profile information");
+        progressDialog.show();
         JSONObject json = new JSONObject();
 
         try {
@@ -300,7 +361,7 @@ public class ProfileActivity extends AppCompatActivity
             json.put("firstName", firstname.getText().toString());
             json.put("lastName", lastname.getText().toString());
             json.put("otherNames", othernames.getText().toString());
-            json.put("gender", genderSpinner.getText().toString());
+            json.put("gender", genderSpinner.getSelectedItem().toString());
             json.put("email", email.getText().toString());
             json.put("phoneNumber", phoneNumber.getText().toString());
             json.put("dateOfBirth", dateOfBirth.getText().toString());
@@ -519,6 +580,7 @@ public class ProfileActivity extends AppCompatActivity
             mRequestQueue.cancelAll(TAG);
         }
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

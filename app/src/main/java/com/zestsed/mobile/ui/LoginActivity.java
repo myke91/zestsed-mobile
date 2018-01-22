@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -296,6 +297,7 @@ public class LoginActivity extends Activity {
 
         final AlertDialog dialogSetPassword = builder.create();
         dialogSetPassword.show();
+        dialogSetPassword.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
     }
 
     @Override
