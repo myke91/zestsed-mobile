@@ -1,6 +1,5 @@
 package com.zestsed.mobile.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONException;
@@ -14,22 +13,16 @@ import java.util.Map;
  */
 
 public class InvestmentDetails extends JSONObject {
-    @JsonProperty("member_id")
     private int memberId;
-    @JsonProperty("quota_month")
     private String quotaMonth;
-    @JsonProperty("quota_year")
     private String quotaYear;
-    @JsonProperty("quota_amount")
+    private Double cycleMonth;
+    private Double cycleYear;
     private Double quotaAmount;
-    @JsonProperty("quota_rollover")
     private Double quotaRollover;
-    @JsonProperty("quota_with_interest")
     private Double quotaWithInterest;
-    @JsonProperty("interest_amount")
     private Double interestAmount;
-    @JsonProperty("cummulative_interest")
-    private Double cummulativeInterest;
+    private Double cumulativeInterest;
 
     public InvestmentDetails() {
     }
@@ -80,6 +73,22 @@ public class InvestmentDetails extends JSONObject {
         this.quotaYear = quotaYear;
     }
 
+    public Double getCycleMonth() {
+        return cycleMonth;
+    }
+
+    public void setCycleMonth(Double cycleMonth) {
+        this.cycleMonth = cycleMonth;
+    }
+
+    public Double getCycleYear() {
+        return cycleYear;
+    }
+
+    public void setCycleYear(Double cycleYear) {
+        this.cycleYear = cycleYear;
+    }
+
     public Double getQuotaAmount() {
         return quotaAmount;
     }
@@ -112,11 +121,11 @@ public class InvestmentDetails extends JSONObject {
         this.interestAmount = interestAmount;
     }
 
-    public Double getCummulativeInterest() {
-        return cummulativeInterest;
+    public Double getCumulativeInterest() {
+        return cumulativeInterest;
     }
 
-    public void setCummulativeInterest(Double cummulativeInterest) {
-        this.cummulativeInterest = cummulativeInterest;
+    public void setCumulativeInterest(Double cumulativeInterest) {
+        this.cumulativeInterest = cumulativeInterest;
     }
 }

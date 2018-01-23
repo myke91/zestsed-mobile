@@ -173,7 +173,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
         final TextInputEditText txtDateOfContribution = (TextInputEditText) layout.findViewById(R.id.date_of_contribution);
         final TextInputEditText txtContributionAmount = (TextInputEditText) layout.findViewById(R.id.contribution_amount);
 
-        final CharSequence[] MODE_PAYMENT_OPTION = {"- MODE OF PAYMENT -", "Mobile Money", "Bank Transfer", "Cash", "Cheque", "Bank Draft"};
+        final CharSequence[] MODE_PAYMENT_OPTION = {"- MODE OF PAYMENT -", "Mobile Money", "Bank Transfer", "Cash", "Cheque"};
         ArrayAdapter<CharSequence> genderAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, MODE_PAYMENT_OPTION);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnModeOfPayment.setAdapter(genderAdapter);

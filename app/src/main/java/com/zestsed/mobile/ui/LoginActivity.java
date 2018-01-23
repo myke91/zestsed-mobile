@@ -224,9 +224,41 @@ public class LoginActivity extends Activity {
 
                 }
             });
+            JSONObject deviceJson = new JSONObject();
+            String token = FirebaseInstanceId.getInstance().getToken();
+            if (token == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Kindly check your connection to the internet!");
+                builder.setTitle("LOGIN ERROR");
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return;
+            }
+            try {
+                deviceJson.put("email", mEmailView.getText().toString());
+                deviceJson.put("token", token);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            final JsonObjectRequest deviceRegisterRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/registerDevice", deviceJson, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e(TAG, "Error occured while registrating device");
+
+                }
+            });
+
+            mRequestQueue.add(deviceRegisterRequest);
             mRequestQueue.add(jsonRequest);
         }
     }
+
+
 
     private boolean isEmailValid(String email) {
         Matcher matcher = Constants.VALID_EMAIL_ADDRESS_REGEX.matcher(email);

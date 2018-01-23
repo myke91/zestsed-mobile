@@ -90,7 +90,7 @@ public class InvestFragment extends Fragment {
 
                     txtOpeningBalance.setText("Opening Quota \n GH₵ " + openingBalance);
                     txtTotalContributions.setText("Total Quota \n GH₵ " + totalContributions);
-                    txtInterestAccrued.setText("Total Interest Accrued \n GH₵ " + totalInterest);
+                    txtInterestAccrued.setText("Cumulative Interest \n GH₵ " + totalInterest);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

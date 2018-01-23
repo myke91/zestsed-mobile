@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class Contribution extends JSONObject {
     String dateOfContribution;
     String contributionAmount;
     String userEmail;
-    int userId;
+    int memberId;
     int isApproved;
     int isInvested;
     String dateOfApproval;
@@ -115,12 +114,12 @@ public class Contribution extends JSONObject {
         this.userEmail = userEmail;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getMemberId() {
+        return memberId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
     }
 
     public int getIsApproved() {
