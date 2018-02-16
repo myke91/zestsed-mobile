@@ -14,7 +14,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="sign_up_header">SIGN UP FOR AN ACCOUNT AND START INVESTING</string>
-    <string name="add_contribution_header">SUBMIT YOUR CONTRIBUTION</string>
+    <string name="add_contribution_header">SUBMIT YOUR QUOTA</string>
     <string name="set_password_header">SET PASSWORD</string>
     <string name="back"><![CDATA[<< Back]]></string>
     <string name="navigation_drawer_open">Open navigation drawer</string>

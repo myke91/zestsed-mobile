@@ -248,7 +248,7 @@ public class LoginActivity extends Activity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.e(TAG, "Error occured while registrating device");
+                    Log.e(TAG, "Error occurred while registering device");
 
                 }
             });

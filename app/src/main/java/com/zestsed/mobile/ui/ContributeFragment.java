@@ -173,7 +173,9 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
         final TextInputEditText txtDateOfContribution = (TextInputEditText) layout.findViewById(R.id.date_of_contribution);
         final TextInputEditText txtContributionAmount = (TextInputEditText) layout.findViewById(R.id.contribution_amount);
 
-        final CharSequence[] MODE_PAYMENT_OPTION = {"- MODE OF PAYMENT -", "Mobile Money", "Bank Transfer", "Cash", "Cheque"};
+        final CharSequence[] MODE_PAYMENT_OPTION = {
+
+        };
         ArrayAdapter<CharSequence> genderAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, MODE_PAYMENT_OPTION);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnModeOfPayment.setAdapter(genderAdapter);
@@ -232,7 +234,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
                     error = true;
                 }
                 if (TextUtils.isEmpty(txtContributionAmount.getText().toString())) {
-                    txtContributionAmount.setError("Enter Occupation");
+                    txtContributionAmount.setError("Enter Quota Amount");
                     error = true;
                 }
 
@@ -242,7 +244,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
                 } else {
                     dialog.dismiss();
 
-                    final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Saving contribution...");
+                    final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "Saving quota...");
                     progressDialog.show();
                     String modeOfPayment = spnModeOfPayment.getSelectedItem().toString();
                     String sourceOfPayment = txtSourceOfPayment.getText().toString();
@@ -253,7 +255,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
 
                     if (email.equals("")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setMessage("Cannot Save Contribution. \n Possible Invalid Session. \nRe login and try again ");
+                        builder.setMessage("Cannot Save Quota. \n Possible Invalid Session. \nRe login and try again ");
                         builder.setTitle(R.string.app_name);
                         AlertDialog errorDialog = builder.create();
                         errorDialog.show();
