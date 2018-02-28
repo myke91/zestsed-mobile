@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">ZestSed</string>
+    <string name="app_name">ZestSed [TEST]</string>
+
+    <string name="company_name">ZestSed INC.</string>
+    <string name="company_email">info@zestsed.com</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -23,21 +26,114 @@
     <string name="preference_file">com.zestsed.mobile</string>
     <string name="title_activity_splash_screen">ZestSed</string>
     <string name="splash_screen">ZestSed</string>
+    <string name="cover_image">Cover Image!!!</string>
+
 
     <string name="title_activity_contributions">Financials</string>
     <string name="title_activity_profile">Profile</string>
-    <string name="title_activity_products">Products</string>
+    <string name="title_activity_products">Why Us</string>
     <string name="title_activity_about_us">About Us</string>
 
+    <string name="nav_contributions">Financials</string>
+    <string name="nav_products">Why Us</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_about_us">About us</string>
+
     <string name="about_us">
-        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-        excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
-        Et harum quidem rerum facilis est et expedita distinctio.
-        \n\nNam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id
-        quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
-        \n\nTemporibus autem quibusdam et aut officiis debitis aut
-        rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
-        Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat
-        www.zestsed.com
+        <![CDATA[
+        <p>
+            We are the <b>Zest!</b> The <b>Drive</b> that spark the <b>Financial Giant</b> in you. But beyond that, we are made
+            up of <b>Vibrant</b> and <b>Engaging Minds</b>, <b>Thriving</b> to <b>create</b> a <b>Passionate Community</b> where <b>Financial
+            Education</b> becomes the <b>NEW NORMAL</b> For Ghana\'s Economic Good and For a Better Tomorrow.
+        </p>
+
+        <p>
+            ZestSed Ghana is a Financial Mindshift organization on a journey to Empower Young People through
+            Financial Education, while providing Hands-On experience. Its a 2-in-1 Fintech Community,
+            made up of the Wealth Creators &amp;  the Financial Education Community. More than just a common
+            ground for those interested in upping their Financial Literacy, ZestSed offers unrivaled
+            Networking and Investing opportunities.
+        </p>
+        <p>
+            For us, the social impact is key in building a financial community, where members engage in regular
+            constructive <b>Knowledge Sharing Sessions (KSS)</b> on Personal Finance, Entrepreneurship, Money Matters,
+            Financial Technologies and inspired to share same with their peers via the SnowBall effect.
+            We believe the Change we seek is Doable one person at a time.
+        </p>
+        <h3>VISION</h3>
+        <b>We aim at Creating a Platform that Financially Empowers Young Ghanaian minds.</b>
+
+        <h3>MISSION</h3>
+        <ul>
+            <li>
+                Aspires to raise Financially Responsible Young Adults to Manage their Personal Finances and
+                impact the Economy at all levels.
+            </li>
+            <li>
+                Engage young people in various Financial Education Projects both as Learners, Trainers or Mentors.
+            </li>
+            <li>
+              Harness the growing Fintech opportunities and keep young people abreast with current disruptive
+              technologies for growth.
+            </li>
+        </ul>
+
+        The Zest Side of Life, it\'s all about Financial Empowerment, Learning By Doing, Thinking-Long-Term
+        whiles leveraging the agile Technological opportunities for both personal and economic growth.
+        We are on a quest to Commitedly raise the level of Financial Literacy among Young Ghanaians.
+        Empowering our younger generation to be Financially Savvy is a gift; a Life Long Experience
+        that will aid Informed Decision Making, Job Creation and Increment in Ghana\'s GDP.
+        ]]>
+    </string>
+
+    <string name="why_us">
+        <![CDATA[
+        <h2>WHY US</h2>
+        <p>The SPINE effect</p>
+
+        <p>
+            Members of our noble communities are privileged to enjoy our Well-Thought-Out SPINE effects,
+            a lasting experience that grows with them.
+        </p>
+        <p>
+            <b>S- SECURITY</b> is an integral element of our environment that provides the peace of mind to nurture the
+            investor in you with zest, and the assurance that quotas are entrusted in the cares of reputable
+            and trustworthy financial brands. Members gain confidence since they are empowered to psychologically,
+            emotionally and most importantly financially prepare, for a stress-free future.
+        </p>
+        <p>
+            <b>P- PRIORITY</b> informs our decision to gain financial knowledge to secure the future. Our communities
+            therefore inspire a proactive culture of managing your personal financial lifestyle. We are
+            more concerned about how you consciously develop the habit of ‘Invest Before you Spend’ to
+            \'Buy Interest\'; eliminating the "Hand-To-Mouth" lifestyle. Financial freedom requires discipline
+            and we at <b>ZESTSED</b> help each other make it a <b>PRIORITY</b>, to consciously channel our financial
+            resources into productive use.
+        </p>
+        <p>
+            <b>I- INVESTING</b> is the <b>NEW BOLD</b>. A step your future self will thank you for. Depending solely on your
+            pension benefits for retirement won\'t be enough. Unless your company offers a sizable pension
+            plan, you will probably need to start spending prudently to invest early. <b>ZESTSED</b> makes it
+            easier for you to understand the need to Invest early: by instilling The Learning By Doing
+            attitude. Because we know that your invested income can cater for your living expense,
+            supplement other activities for a comfortable Retirement or towards achieving your goals.
+        </p>
+        <p>
+            <b>N- NETWORKING</b> is core to us because it exposes our communities to a vast pool of knowledge from
+            professionals, students and entrepreneurs across different industries, allowing them to
+            increase their contacts for growth. Our members reach out to industry experts as well as
+            the broader finance and investment world through our annual networking seminars, and summits
+            organized. At the Zest Side of Life we strongly believe that <b>‘Your Network Today Will Grow
+            your Networth Tomorrow’</b>.
+        </p>
+        <p>
+            <b>E- EMPOWERMENT</b> at the Zest Side of life is a priceless boost and knowledge gained that increases
+            your financial intelligence. Our communities are a blend of smart brains across diverse
+            backgrounds with different work profiles and exposures. It therefore offers each member an
+            opportunity to learn and benefit from the wealth of experience via our weekly <b>Knowledge
+            Sharing Sessions (KSS)</b>. An experience that challenges your way of thinking and keeps you
+            informed.
+        </p>
+        ☺ Congrats <b>Wealth Creator!</b> You\'ve Got Your <b>Financial SPINE</b> Covered 👍
+        ]]>
     </string>
 </resources>

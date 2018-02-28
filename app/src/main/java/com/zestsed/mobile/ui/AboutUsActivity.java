@@ -3,7 +3,6 @@ package com.zestsed.mobile.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,14 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.zestsed.mobile.R;
 
 public class AboutUsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +27,6 @@ public class AboutUsActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        auth = FirebaseAuth.getInstance();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -37,21 +36,11 @@ public class AboutUsActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
 
-    // this listener will be called when there is change in firebase user session
-    FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user == null) {
-                // user auth state is changed - user is null
-                // launch login activity
-                startActivity(new Intent(AboutUsActivity.this, LoginActivity.class));
-                finish();
-            }
-        }
-    };
+        WebView webView = (WebView) findViewById(R.id.webView);
+        webView.loadDataWithBaseURL(null, getString(R.string.about_us), "text/html", "utf-8", null);
+
+    }
 
     @Override
     public void onBackPressed() {
@@ -95,16 +84,16 @@ public class AboutUsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_contributions) {
-           startActivity(new Intent(AboutUsActivity.this,ContributionsTabActivity.class));
+            startActivity(new Intent(AboutUsActivity.this, ContributionsTabActivity.class));
             finish();
         } else if (id == R.id.nav_products) {
-            startActivity(new Intent(AboutUsActivity.this,ProductsActivity.class));
+            startActivity(new Intent(AboutUsActivity.this, WhyUsActivity.class));
             finish();
         } else if (id == R.id.nav_profile) {
-            startActivity(new Intent(AboutUsActivity.this,ProfileActivity.class));
+            startActivity(new Intent(AboutUsActivity.this, ProfileActivity.class));
             finish();
         } else if (id == R.id.nav_about_us) {
-            startActivity(new Intent(AboutUsActivity.this,AboutUsActivity.class));
+            startActivity(new Intent(AboutUsActivity.this, AboutUsActivity.class));
             finish();
         }
 

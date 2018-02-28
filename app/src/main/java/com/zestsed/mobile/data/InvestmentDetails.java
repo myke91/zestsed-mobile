@@ -13,6 +13,7 @@ import java.util.Map;
  */
 
 public class InvestmentDetails extends JSONObject {
+    private int investmentId;
     private int memberId;
     private String quotaMonth;
     private String quotaYear;
@@ -47,6 +48,14 @@ public class InvestmentDetails extends JSONObject {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public int getInvestmentId() {
+        return investmentId;
+    }
+
+    public void setInvestmentId(int investmentId) {
+        this.investmentId = investmentId;
     }
 
     public int getMemberId() {

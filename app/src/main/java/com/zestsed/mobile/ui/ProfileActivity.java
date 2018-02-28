@@ -128,8 +128,6 @@ public class ProfileActivity extends AppCompatActivity
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_dropdown_item, genderList);
 
-        genderSpinner.setEnabled(false);
-        genderSpinner.setClickable(false);
         genderSpinner.setAdapter(spinnerArrayAdapter);
 
 
@@ -205,9 +203,13 @@ public class ProfileActivity extends AppCompatActivity
         String viewTag = (String) view.getTag();
         int id = getResources().getIdentifier(viewTag, "id", getPackageName());
         try {
-            this.enableInput((EditText) findViewById(id));
-        } catch (Exception ex) {
-            this.enableInput((Spinner) findViewById(id));
+            if (view instanceof EditText) {
+                this.enableInput((EditText) findViewById(id));
+            } else {
+                this.enableInput((Spinner) findViewById(id));
+            }
+        }catch (Exception ex){
+            Log.e(TAG,"ERROR ENABLING INPUTS");
         }
     }
 
@@ -378,18 +380,18 @@ public class ProfileActivity extends AppCompatActivity
             @Override
             public void onResponse(JSONObject response) {
 
-                firstname.setEnabled(false);
-                lastname.setEnabled(false);
-                othernames.setEnabled(false);
-                email.setEnabled(false);
-                genderSpinner.setEnabled(false);
-                phoneNumber.setEnabled(false);
-                dateOfBirth.setEnabled(false);
-                nextOfKin.setEnabled(false);
-                nextOfKinPhoneNumber.setEnabled(false);
-                occupation.setEnabled(false);
-                residentialAddress.setEnabled(false);
-                purposeOfInvesting.setEnabled(false);
+//                firstname.setEnabled(false);
+//                lastname.setEnabled(false);
+//                othernames.setEnabled(false);
+//                email.setEnabled(false);
+//                genderSpinner.setEnabled(false);
+//                phoneNumber.setEnabled(false);
+//                dateOfBirth.setEnabled(false);
+//                nextOfKin.setEnabled(false);
+//                nextOfKinPhoneNumber.setEnabled(false);
+//                occupation.setEnabled(false);
+//                residentialAddress.setEnabled(false);
+//                purposeOfInvesting.setEnabled(false);
 
                 progressDialog.dismiss();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
@@ -592,7 +594,7 @@ public class ProfileActivity extends AppCompatActivity
             startActivity(new Intent(ProfileActivity.this, ContributionsTabActivity.class));
             finish();
         } else if (id == R.id.nav_products) {
-            startActivity(new Intent(ProfileActivity.this, ProductsActivity.class));
+            startActivity(new Intent(ProfileActivity.this, WhyUsActivity.class));
             finish();
         } else if (id == R.id.nav_profile) {
             startActivity(new Intent(ProfileActivity.this, ProfileActivity.class));

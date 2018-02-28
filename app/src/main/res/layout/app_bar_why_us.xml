@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.zestsed.mobile.ui.ProductsActivity">
+    tools:context="com.zestsed.mobile.ui.WhyUsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_products" />
+    <include layout="@layout/content_why_us" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -36,22 +36,12 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.ControllableTask;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.adapter.ContributionListAdapter;
-import com.zestsed.mobile.data.Client;
 import com.zestsed.mobile.data.Constants;
 import com.zestsed.mobile.data.Contribution;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -61,7 +51,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static com.zestsed.mobile.R.id.dateOfBirth;
 
 public class ContributeFragment extends Fragment implements View.OnClickListener {
 
@@ -174,7 +163,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
         final TextInputEditText txtContributionAmount = (TextInputEditText) layout.findViewById(R.id.contribution_amount);
 
         final CharSequence[] MODE_PAYMENT_OPTION = {
-
+                "- MODE OF PAYMENT -", "Mobile Money", "Bank Transfer", "Cash", "Cheque", "Bank Draft"
         };
         ArrayAdapter<CharSequence> genderAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, MODE_PAYMENT_OPTION);
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -217,20 +206,17 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
 
                 if (spnModeOfPayment.getSelectedItem().toString().equalsIgnoreCase("- MODE OF PAYMENT -")) {
                     TextView v = (TextView) spnModeOfPayment.getSelectedView();
-                    v.setError("Select a gender");
+                    v.setError("Select a mode of payment");
                     error = true;
                 }
                 if (TextUtils.isEmpty(txtSourceOfPayment.getText().toString())) {
-                    txtSourceOfPayment.setError("Enter Date Of Birth");
+                    txtSourceOfPayment.setError("Enter Source of Payment");
                     error = true;
                 }
 
-                if (TextUtils.isEmpty(txtVendorName.getText().toString())) {
-                    txtVendorName.setError("Enter Next Of Kin Name");
-                    error = true;
-                }
+
                 if (TextUtils.isEmpty(txtDateOfContribution.getText().toString())) {
-                    txtDateOfContribution.setError("Enter Next Of Kin Phone Number");
+                    txtDateOfContribution.setError("Enter Date of Contribution");
                     error = true;
                 }
                 if (TextUtils.isEmpty(txtContributionAmount.getText().toString())) {
@@ -240,7 +226,7 @@ public class ContributeFragment extends Fragment implements View.OnClickListener
 
 
                 if (error) {
-                    Toast.makeText(getActivity(), "Invalid form entries", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Invalid form entryg", Toast.LENGTH_LONG).show();
                 } else {
                     dialog.dismiss();
 

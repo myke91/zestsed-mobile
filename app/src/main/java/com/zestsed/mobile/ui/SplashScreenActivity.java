@@ -92,7 +92,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-         final int SPLASH_DELAY_LENGTH = 1000;
+         final int SPLASH_DELAY_LENGTH = 4000;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

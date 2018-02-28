@@ -1,36 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#d0d2d1"
-    android:orientation="vertical"
-    tools:context="com.zestsed.mobile.ui.SplashScreenActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.zestsed.mobile.ui.SplashScreenActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
          TextureView, etc. -->
-    <LinearLayout
+
+    <ImageView
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:contentDescription="@string/cover_image"
         android:keepScreenOn="true"
-        android:gravity="center">
-        <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/icon"/>
-
-        <TextView
-            android:id="@+id/investment_tip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:textColor="#000"
-            android:text="Great Investors Don’t Diversify"
-            android:textSize="20sp"
-            android:textStyle="italic" />
-    </LinearLayout>
-
+        android:src="@mipmap/cover"/>
 </LinearLayout>

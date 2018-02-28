@@ -24,17 +24,9 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.zestsed.mobile.R;
 import com.zestsed.mobile.adapter.InvestmentListAdapter;
 import com.zestsed.mobile.data.Constants;
-import com.zestsed.mobile.data.Investment;
 import com.zestsed.mobile.data.InvestmentDetails;
 
 import org.json.JSONArray;

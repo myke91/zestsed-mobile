@@ -43,19 +43,18 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="true"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="firstName"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="firstName"/>-->
             </LinearLayout>
 
             <TextView
@@ -79,18 +78,17 @@
                     android:layout_marginTop="3dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="true"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="lastName"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="lastName"/>-->
             </LinearLayout>
 
             <TextView
@@ -112,18 +110,17 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="true"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="otherNames"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="otherNames"/>-->
             </LinearLayout>
 
             <TextView
@@ -147,19 +144,18 @@
                     android:layout_marginTop="3dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="true"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="email"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="email"/>-->
             </LinearLayout>
 
             <TextView
@@ -174,18 +170,6 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <!--<EditText-->
-                    <!--android:id="@+id/gender"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_margin="5dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="#fff"-->
-                    <!--android:clickable="true"-->
-                    <!--android:elevation="4dp"-->
-                    <!--android:enabled="false"-->
-                    <!--android:padding="15dp"/>-->
-
                 <Spinner
                     android:id="@+id/gender"
                     android:layout_width="match_parent"
@@ -195,18 +179,18 @@
                     android:layout_marginTop="3dp"
                     android:layout_weight="1"
                     android:background="#fff"
-                    android:clickable="false"
+                    android:clickable="true"
                     android:elevation="4dp"
-                    android:enabled="false"/>
+                    android:enabled="true"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="gender"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="gender"/>-->
             </LinearLayout>
 
             <TextView
@@ -229,17 +213,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="phonenumber"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="phonenumber"/>-->
             </LinearLayout>
 
             <TextView
@@ -262,17 +246,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="dateOfBirth"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="dateOfBirth"/>-->
             </LinearLayout>
 
             <TextView
@@ -295,17 +279,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="nextOfKin"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="nextOfKin"/>-->
             </LinearLayout>
 
             <TextView
@@ -328,17 +312,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="nextOfKinTelephone"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="nextOfKinTelephone"/>-->
             </LinearLayout>
 
             <TextView
@@ -361,17 +345,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="residentialAddress"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="residentialAddress"/>-->
             </LinearLayout>
 
             <TextView
@@ -394,17 +378,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="occupation"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="occupation"/>-->
             </LinearLayout>
 
             <TextView
@@ -427,17 +411,17 @@
                     android:layout_weight="1"
                     android:background="#fff"
                     android:elevation="4dp"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:padding="15dp"/>
 
-                <android.support.v7.widget.AppCompatImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0"
-                    android:elevation="4dp"
-                    android:onClick="enableInput"
-                    android:src="@android:drawable/ic_menu_edit"
-                    android:tag="purposeOfInvesting"/>
+                <!--<android.support.v7.widget.AppCompatImageButton-->
+                    <!--android:layout_width="50dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0"-->
+                    <!--android:elevation="4dp"-->
+                    <!--android:onClick="enableInput"-->
+                    <!--android:src="@android:drawable/ic_menu_edit"-->
+                    <!--android:tag="purposeOfInvesting"/>-->
             </LinearLayout>
 
         </LinearLayout>
@@ -450,12 +434,12 @@
             android:gravity="bottom"
             android:orientation="horizontal">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="cancelProfileUpdate"
-                android:text="Cancel"/>
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:onClick="cancelProfileUpdate"-->
+                <!--android:text="Cancel"/>-->
 
             <Button
                 android:layout_width="match_parent"

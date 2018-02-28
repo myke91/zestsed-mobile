@@ -3,7 +3,6 @@ package com.zestsed.mobile.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,26 +11,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.GridView;
+import android.webkit.WebView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.zestsed.mobile.R;
-import com.zestsed.mobile.adapter.ProductGridAdapter;
-import com.zestsed.mobile.data.Product;
 
-public class ProductsActivity extends AppCompatActivity
+public class WhyUsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_products);
+        setContentView(R.layout.activity_why_us);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        auth = FirebaseAuth.getInstance();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,25 +35,13 @@ public class ProductsActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Product[] products = new Product[]{new Product("Prod1", "Desc1",R.mipmap.ic_launcher), new Product("Prod2", "Desc2",R.mipmap.ic_launcher),
-                new Product("Prod3", "Desc3",R.mipmap.ic_launcher), new Product("Prod4", "Desc4",R.mipmap.ic_launcher),
-                new Product("Prod5", "Desc5",R.mipmap.ic_launcher), new Product("Prod6", "Desc6",R.mipmap.ic_launcher)};
-        GridView gridView = (GridView) findViewById(R.id.product_grid);
-        ProductGridAdapter productGridAdapter = new ProductGridAdapter(this, products);
-        gridView.setAdapter(productGridAdapter);
-    }
+//        TextView textView = (TextView) findViewById(R.id.text_content);
+//
+//        textView.setText(Html.fromHtml(getString(R.string.why_us)));
 
-    // this listener will be called when there is change in firebase user session
-    FirebaseAuth.AuthStateListener authListener = new FirebaseAuth.AuthStateListener() {
-        @Override
-        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user == null) {
-                startActivity(new Intent(ProductsActivity.this, LoginActivity.class));
-                finish();
-            }
-        }
-    };
+        WebView webView = (WebView) findViewById(R.id.webView);
+        webView.loadDataWithBaseURL(null, getString(R.string.why_us), "text/html", "utf-8", null);
+    }
 
     @Override
     public void onBackPressed() {
@@ -103,16 +84,16 @@ public class ProductsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_contributions) {
-            startActivity(new Intent(ProductsActivity.this, ContributionsTabActivity.class));
+            startActivity(new Intent(WhyUsActivity.this, ContributionsTabActivity.class));
             finish();
         } else if (id == R.id.nav_products) {
-            startActivity(new Intent(ProductsActivity.this, ProductsActivity.class));
+            startActivity(new Intent(WhyUsActivity.this, WhyUsActivity.class));
             finish();
         } else if (id == R.id.nav_profile) {
-            startActivity(new Intent(ProductsActivity.this, ProfileActivity.class));
+            startActivity(new Intent(WhyUsActivity.this, ProfileActivity.class));
             finish();
         } else if (id == R.id.nav_about_us) {
-            startActivity(new Intent(ProductsActivity.this, AboutUsActivity.class));
+            startActivity(new Intent(WhyUsActivity.this, AboutUsActivity.class));
             finish();
         }
 

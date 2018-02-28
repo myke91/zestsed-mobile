@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_products"
+        layout="@layout/app_bar_why_us"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -227,6 +227,7 @@ public class LoginActivity extends Activity {
             JSONObject deviceJson = new JSONObject();
             String token = FirebaseInstanceId.getInstance().getToken();
             if (token == null) {
+                showProgress(false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Kindly check your connection to the internet!");
                 builder.setTitle("LOGIN ERROR");
@@ -249,6 +250,7 @@ public class LoginActivity extends Activity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e(TAG, "Error occurred while registering device");
+                    Log.e(TAG, error.toString());
 
                 }
             });
@@ -257,7 +259,6 @@ public class LoginActivity extends Activity {
             mRequestQueue.add(jsonRequest);
         }
     }
-
 
 
     private boolean isEmailValid(String email) {
@@ -281,44 +282,44 @@ public class LoginActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 if (!txtPassword.getText().toString().equals(txtPassword2.getText().toString())) {
                     Toast.makeText(getApplicationContext(), "Password and Repeat Password not equal", Toast.LENGTH_LONG).show();
-                }
-                dialog.dismiss();
+                } else {
+                    dialog.dismiss();
 
-                final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "", "Processing request...");
-                progressDialog.show();
-                JSONObject data = new JSONObject();
-                try {
-                    data.put("password", txtPassword.getText().toString());
-                    data.put("email", mEmailView.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/setPassword", data, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Request successful. \n Proceed to login with new password", Toast.LENGTH_LONG).show();
+                    final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "", "Processing request...");
+                    progressDialog.show();
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("password", txtPassword.getText().toString());
+                        data.put("email", mEmailView.getText().toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
-                            Toast.makeText(getApplicationContext(), volleyError.getMessage(), Toast.LENGTH_LONG).show();
 
-                        } else {
-                            Toast.makeText(getApplicationContext(), "SERVER ERROR", Toast.LENGTH_LONG).show();
+                    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, Constants.BACKEND_BASE_URL + "/mobile/setPassword", data, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Request successful. \n Proceed to login with new password", Toast.LENGTH_LONG).show();
                         }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progressDialog.dismiss();
+                            if (error.networkResponse != null && error.networkResponse.data != null) {
+                                VolleyError volleyError = new VolleyError(new String(error.networkResponse.data));
+                                Toast.makeText(getApplicationContext(), volleyError.getMessage(), Toast.LENGTH_LONG).show();
 
-                    }
-                });
-                jsonRequest.setTag(TAG);
-                mRequestQueue.add(jsonRequest);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "SERVER ERROR", Toast.LENGTH_LONG).show();
+                            }
 
+                        }
+                    });
+                    jsonRequest.setTag(TAG);
+                    mRequestQueue.add(jsonRequest);
+
+                }
             }
-
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override

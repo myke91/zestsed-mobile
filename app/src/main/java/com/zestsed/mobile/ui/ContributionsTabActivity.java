@@ -127,7 +127,7 @@ FirebaseAuth auth;
             startActivity(new Intent(ContributionsTabActivity.this,ContributionsTabActivity.class));
             finish();
         } else if (id == R.id.nav_products) {
-            startActivity(new Intent(ContributionsTabActivity.this,ProductsActivity.class));
+            startActivity(new Intent(ContributionsTabActivity.this,WhyUsActivity.class));
             finish();
         } else if (id == R.id.nav_profile) {
             startActivity(new Intent(ContributionsTabActivity.this,ProfileActivity.class));
